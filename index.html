@@ -22,9 +22,7 @@
             --border: rgba(255,215,0,0.15);
             --glow: rgba(255,215,0,0.3);
         }
-        
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: var(--bg);
@@ -34,8 +32,6 @@
             -webkit-tap-highlight-color: transparent;
             user-select: none;
         }
-        
-        /* ============ الرأس ============ */
         .header {
             background: linear-gradient(180deg, #1a1a00 0%, #000000 100%);
             padding: 20px 15px;
@@ -52,12 +48,7 @@
             margin-bottom: 5px;
             letter-spacing: 1px;
         }
-        .header .subtitle {
-            font-size: 11px;
-            color: var(--text-secondary);
-        }
-        
-        /* ============ التبويبات ============ */
+        .header .subtitle { font-size: 11px; color: var(--text-secondary); }
         .tabs {
             display: flex;
             gap: 5px;
@@ -88,18 +79,13 @@
             box-shadow: 0 0 15px var(--glow);
         }
         .tab-btn .icon { margin-left: 4px; }
-        
-        /* ============ المحتوى ============ */
         .content { padding: 15px; }
         .page { display: none; }
         .page.active { display: block; animation: fadeIn 0.3s; }
-        
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
-        /* ============ البطاقات ============ */
         .card {
             background: var(--card);
             border-radius: 16px;
@@ -116,8 +102,6 @@
             gap: 8px;
             color: var(--gold);
         }
-        
-        /* ============ شبكة الألعاب ============ */
         .games-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -132,6 +116,7 @@
             text-align: center;
             cursor: pointer;
             transition: all 0.3s;
+            position: relative;
         }
         .game-card:active { transform: scale(0.95); }
         .game-card.selected {
@@ -139,10 +124,26 @@
             border-color: var(--gold);
             box-shadow: 0 0 15px var(--glow);
         }
+        .game-card.verified {
+            background: rgba(0,200,83,0.1);
+            border-color: var(--success);
+        }
         .game-card .game-icon { font-size: 30px; margin-bottom: 6px; }
         .game-card .game-name { font-size: 11px; color: var(--text-secondary); }
-        
-        /* ============ رفع الصورة ============ */
+        .game-card .verified-badge {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: var(--success);
+            color: #fff;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         .upload-zone {
             border: 2px dashed var(--gold);
             border-radius: 16px;
@@ -156,7 +157,6 @@
         .upload-zone:active { background: rgba(255,215,0,0.08); }
         .upload-zone .upload-icon { font-size: 40px; margin-bottom: 8px; }
         .upload-zone p { font-size: 12px; color: var(--text-secondary); }
-        
         .preview-image {
             max-width: 100%;
             max-height: 200px;
@@ -166,8 +166,6 @@
             object-fit: contain;
             border: 2px solid var(--border);
         }
-        
-        /* ============ الأزرار ============ */
         .btn {
             display: block;
             width: 100%;
@@ -183,7 +181,7 @@
             letter-spacing: 0.5px;
         }
         .btn:active { transform: scale(0.97); }
-        .btn-primary { 
+        .btn-primary {
             background: linear-gradient(135deg, var(--gold), var(--primary-dark));
             color: #000;
             font-weight: bold;
@@ -195,12 +193,7 @@
             border: 2px solid var(--gold);
             color: var(--gold);
         }
-        .btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-        
-        /* ============ المتجر ============ */
+        .btn:disabled { opacity: 0.3; cursor: not-allowed; }
         .shop-tabs {
             display: flex;
             gap: 4px;
@@ -224,7 +217,6 @@
             border-color: var(--gold);
             font-weight: bold;
         }
-        
         .shop-item {
             display: flex;
             align-items: center;
@@ -269,8 +261,6 @@
             white-space: nowrap;
         }
         .shop-item-btn:active { transform: scale(0.95); }
-        
-        /* ============ المتصدرين ============ */
         .leader-item {
             display: flex;
             align-items: center;
@@ -294,12 +284,9 @@
         .rank-2 { background: #C0C0C0; color: #000; }
         .rank-3 { background: #CD7F32; color: #fff; }
         .rank-other { background: rgba(255,215,0,0.1); color: var(--gold); }
-        
         .leader-info { flex: 1; }
         .leader-name { font-weight: 600; }
         .leader-stats { font-size: 11px; color: var(--text-secondary); }
-        
-        /* ============ إحصائيات ============ */
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -318,13 +305,7 @@
             color: var(--gold);
             text-shadow: 0 0 10px var(--glow);
         }
-        .stat-label {
-            font-size: 11px;
-            color: var(--text-secondary);
-            margin-top: 4px;
-        }
-        
-        /* ============ تحميل ============ */
+        .stat-label { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
         .loading {
             text-align: center;
             padding: 30px;
@@ -340,8 +321,6 @@
             margin: 0 auto 10px;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-        
-        /* ============ مودال ============ */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -375,8 +354,6 @@
             margin: 8px 0;
         }
         .modal-box input:focus { outline: none; border-color: var(--gold); }
-        
-        /* ============ نتيجة التحليل ============ */
         .result-box {
             background: rgba(255,215,0,0.05);
             border: 1px solid var(--gold);
@@ -385,10 +362,7 @@
             text-align: center;
             margin: 15px 0;
         }
-        .result-box .result-icon {
-            font-size: 60px;
-            margin-bottom: 10px;
-        }
+        .result-box .result-icon { font-size: 60px; margin-bottom: 10px; }
         .result-box .result-title {
             font-size: 18px;
             color: var(--gold);
@@ -404,8 +378,6 @@
         }
         .result-detail .label { color: var(--text-secondary); }
         .result-detail .value { color: var(--gold); font-weight: bold; }
-        
-        /* ============ إشعار ============ */
         .toast {
             position: fixed;
             bottom: 90px;
@@ -425,8 +397,6 @@
             from { transform: translateX(-50%) translateY(20px); opacity: 0; }
             to { transform: translateX(-50%) translateY(0); opacity: 1; }
         }
-        
-        /* ============ نافذة نجاح ============ */
         .success-overlay {
             display: none;
             position: fixed;
@@ -450,8 +420,6 @@
             60% { transform: scale(1.1); }
             100% { transform: scale(1); }
         }
-        
-        /* ============ خطوات ============ */
         .step-number {
             display: inline-block;
             width: 28px;
@@ -465,44 +433,43 @@
             font-size: 14px;
             margin-left: 8px;
         }
+        .saved-info {
+            background: rgba(0,200,83,0.1);
+            border: 1px solid var(--success);
+            border-radius: 12px;
+            padding: 10px;
+            margin-bottom: 12px;
+            font-size: 12px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 
-    <!-- الرأس -->
     <div class="header">
         <h1>⚔️ ساحة القتال</h1>
         <p class="subtitle">تحدى واربح فلوس حقيقية</p>
     </div>
     
-    <!-- التبويبات -->
     <div class="tabs">
-        <button class="tab-btn active" onclick="showPage('verify')">
-            <span class="icon">🤖</span> تحقق
-        </button>
-        <button class="tab-btn" onclick="showPage('shop')">
-            <span class="icon">🛒</span> متجر
-        </button>
-        <button class="tab-btn" onclick="showPage('leaders')">
-            <span class="icon">👑</span> متصدرين
-        </button>
-        <button class="tab-btn" onclick="showPage('stats')">
-            <span class="icon">📊</span> إحصائيات
-        </button>
+        <button class="tab-btn active" onclick="showPage('verify')"><span class="icon">🤖</span> تحقق</button>
+        <button class="tab-btn" onclick="showPage('shop')"><span class="icon">🛒</span> متجر</button>
+        <button class="tab-btn" onclick="showPage('leaders')"><span class="icon">👑</span> متصدرين</button>
+        <button class="tab-btn" onclick="showPage('stats')"><span class="icon">📊</span> إحصائيات</button>
     </div>
     
-    <!-- المحتوى -->
     <div class="content">
         
-        <!-- صفحة التحقق الذكي -->
+        <!-- صفحة التحقق -->
         <div class="page active" id="page-verify">
             <div class="card">
                 <div class="card-header">🤖 التحقق الذكي من الحساب</div>
                 <p style="font-size:12px;color:var(--text-secondary);margin-bottom:15px;">
-                    الذكاء الاصطناعي راح يقرأ ID واسمك من الصورة تلقائياً
+                    الذكاء الاصطناعي يقرأ ID واسمك من الصورة تلقائياً
                 </p>
                 
-                <!-- الخطوة 1 -->
+                <div id="savedGamesInfo" class="saved-info" style="display:none;"></div>
+                
                 <div id="step1">
                     <p style="font-weight:600;margin-bottom:10px;">
                         <span class="step-number">1</span> اختر لعبتك:
@@ -510,27 +477,23 @@
                     <div class="games-grid" id="gamesGrid"></div>
                 </div>
                 
-                <!-- الخطوة 2 -->
                 <div id="step2" style="display:none;">
                     <p style="font-weight:600;margin-bottom:10px;margin-top:20px;">
                         <span class="step-number">2</span> ارفع صورة من حسابك:
                     </p>
-                    
                     <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
                         <div class="upload-icon">📸</div>
                         <p>اضغط لرفع صورة من اللعبة</p>
                         <p style="font-size:10px;">تأكد من وضوح ID واسمك في الصورة</p>
                     </div>
                     <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
-                    
                     <img id="imagePreview" class="preview-image" alt="معاينة">
-                    
                     <button class="btn btn-primary" id="analyzeBtn" disabled onclick="analyzeImage()">
                         🤖 تحليل الصورة بالذكاء الاصطناعي
                     </button>
+                    <button class="btn btn-outline" onclick="resetSelection()">↩️ اختيار لعبة أخرى</button>
                 </div>
                 
-                <!-- الخطوة 3 -->
                 <div id="step3" style="display:none;">
                     <p style="font-weight:600;margin-bottom:10px;margin-top:20px;">
                         <span class="step-number">3</span> نتيجة التحليل:
@@ -539,7 +502,6 @@
                     <div id="analysisLoading" style="text-align:center;padding:20px;">
                         <div class="spinner"></div>
                         <p style="color:var(--text-secondary);margin-top:12px;">جاري تحليل الصورة...</p>
-                        <p style="font-size:10px;color:var(--text-secondary);">الذكاء الاصطناعي يقرأ بيانات حسابك</p>
                     </div>
                     
                     <div id="analysisResult" style="display:none;">
@@ -548,24 +510,17 @@
                             <div class="result-title">تم استخراج بيانات الحساب</div>
                             <div id="resultDetails"></div>
                         </div>
-                        
-                        <button class="btn btn-primary" onclick="confirmVerification()">
-                            ✅ تأكيد وحفظ المعلومات
-                        </button>
-                        <button class="btn btn-outline" onclick="resetVerification()">
-                            📸 إعادة التقاط الصورة
-                        </button>
+                        <button class="btn btn-success" onclick="confirmVerification()">✅ تأكيد وحفظ المعلومات</button>
+                        <button class="btn btn-outline" onclick="retakePhoto()">📸 إعادة التقاط</button>
                     </div>
                     
                     <div id="analysisError" style="display:none;">
                         <div class="result-box" style="border-color:var(--danger);">
                             <div class="result-icon">❌</div>
                             <div class="result-title" style="color:var(--danger);">لم نتمكن من قراءة الصورة</div>
-                            <p style="font-size:12px;color:var(--text-secondary);">
-                                تأكد من وضوح الصورة وإظهار ID حسابك
-                            </p>
+                            <p style="font-size:12px;color:var(--text-secondary);">تأكد من وضوح الصورة وإظهار ID حسابك</p>
                         </div>
-                        <button class="btn btn-outline" onclick="resetVerification()">🔄 حاول مرة أخرى</button>
+                        <button class="btn btn-outline" onclick="retakePhoto()">🔄 حاول مرة أخرى</button>
                     </div>
                 </div>
             </div>
@@ -578,18 +533,14 @@
                 <button class="shop-tab" onclick="loadShop('frames')">🖼️ إطارات</button>
                 <button class="shop-tab" onclick="loadShop('titles')">🏅 ألقاب</button>
             </div>
-            <div id="shopContent">
-                <div class="loading"><div class="spinner"></div>جاري التحميل...</div>
-            </div>
+            <div id="shopContent"><div class="loading"><div class="spinner"></div>جاري التحميل...</div></div>
         </div>
         
         <!-- صفحة المتصدرين -->
         <div class="page" id="page-leaders">
             <div class="card">
                 <div class="card-header">👑 قائمة المتصدرين</div>
-                <div id="leaderboardContent">
-                    <div class="loading"><div class="spinner"></div>جاري التحميل...</div>
-                </div>
+                <div id="leaderboardContent"><div class="loading"><div class="spinner"></div>جاري التحميل...</div></div>
             </div>
         </div>
         
@@ -597,9 +548,7 @@
         <div class="page" id="page-stats">
             <div class="card">
                 <div class="card-header">📊 إحصائيات البوت</div>
-                <div id="statsContent">
-                    <div class="loading"><div class="spinner"></div>جاري التحميل...</div>
-                </div>
+                <div id="statsContent"><div class="loading"><div class="spinner"></div>جاري التحميل...</div></div>
             </div>
         </div>
         
@@ -632,7 +581,6 @@
         tg.ready();
         tg.expand();
         
-        // ============ البيانات ============
         const games = [
             {id:'pubg', name:'بابجي', icon:'🔫'},
             {id:'cod', name:'كال اوف ديوتي', icon:'💣'},
@@ -654,16 +602,16 @@
         ];
         
         const frames = [
-            {id:'bronze', name:'إطار برونزي', icon:'🟤', price:3000, color:'#CD7F32'},
-            {id:'silver', name:'إطار فضي', icon:'⚪', price:5000, color:'#C0C0C0'},
-            {id:'gold', name:'إطار ذهبي', icon:'🟡', price:10000, color:'#FFD700'},
-            {id:'diamond', name:'إطار ماسي', icon:'💎', price:20000, color:'#00BFFF'},
-            {id:'legendary', name:'إطار أسطوري', icon:'🔥', price:35000, color:'#FF4500'},
-            {id:'neon', name:'إطار نيون', icon:'💚', price:25000, color:'#39FF14'},
-            {id:'fire', name:'إطار ناري', icon:'🔥', price:30000, color:'#FF6600'},
-            {id:'ice', name:'إطار جليدي', icon:'❄️', price:25000, color:'#00FFFF'},
-            {id:'royal', name:'إطار ملكي', icon:'👑', price:50000, color:'#9B59B6'},
-            {id:'shadow', name:'إطار الظل', icon:'🌑', price:15000, color:'#2C3E50'},
+            {id:'bronze', name:'برونزي', icon:'🟤', price:3000, color:'#CD7F32'},
+            {id:'silver', name:'فضي', icon:'⚪', price:5000, color:'#C0C0C0'},
+            {id:'gold', name:'ذهبي', icon:'🟡', price:10000, color:'#FFD700'},
+            {id:'diamond', name:'ماسي', icon:'💎', price:20000, color:'#00BFFF'},
+            {id:'legendary', name:'أسطوري', icon:'🔥', price:35000, color:'#FF4500'},
+            {id:'neon', name:'نيون', icon:'💚', price:25000, color:'#39FF14'},
+            {id:'fire', name:'ناري', icon:'🔥', price:30000, color:'#FF6600'},
+            {id:'ice', name:'جليدي', icon:'❄️', price:25000, color:'#00FFFF'},
+            {id:'royal', name:'ملكي', icon:'👑', price:50000, color:'#9B59B6'},
+            {id:'shadow', name:'الظل', icon:'🌑', price:15000, color:'#2C3E50'},
         ];
         
         const titles = [
@@ -693,64 +641,108 @@
         ];
         
         const botStats = {
-            total_users: 1250,
-            active_today: 340,
-            active_challenges: 28,
-            completed_challenges: 1540,
-            total_prizes: 2310000
+            total_users: 1250, active_today: 340,
+            active_challenges: 28, completed_challenges: 1540, total_prizes: 2310000
         };
         
         let selectedGame = null;
         let uploadedImageBase64 = null;
         let analysisData = null;
+        let savedGames = [];
+        let savedImages = [];
+        let savedPlayerIds = [];
         
-        // ============ التبويبات ============
         function showPage(page) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            
             document.getElementById('page-' + page).classList.add('active');
-            
-            const tabBtns = document.querySelectorAll('.tab-btn');
-            const tabIndex = {verify:0, shop:1, leaders:2, stats:3};
-            if (tabIndex[page] !== undefined) {
-                tabBtns[tabIndex[page]].classList.add('active');
-            }
-            
+            const tabs = document.querySelectorAll('.tab-btn');
+            const idx = {verify:0, shop:1, leaders:2, stats:3};
+            if (idx[page] !== undefined) tabs[idx[page]].classList.add('active');
             if (page === 'leaders') loadLeaderboard();
             if (page === 'stats') loadStats();
             if (page === 'shop') loadShop('tickets');
+            if (page === 'verify') { buildGamesGrid(); updateSavedInfo(); }
         }
         
-        // ============ التحقق الذكي ============
         function buildGamesGrid() {
             const grid = document.getElementById('gamesGrid');
-            grid.innerHTML = games.map(g => `
-                <div class="game-card" id="game-${g.id}" onclick="selectGame('${g.id}')">
-                    <div class="game-icon">${g.icon}</div>
-                    <div class="game-name">${g.name}</div>
-                </div>
-            `).join('');
+            grid.innerHTML = games.map(g => {
+                const isSaved = savedGames.includes(g.id);
+                return `
+                    <div class="game-card ${isSaved ? 'verified' : ''}" id="game-${g.id}" onclick="selectGame('${g.id}')">
+                        ${isSaved ? '<div class="verified-badge">✓</div>' : ''}
+                        <div class="game-icon">${g.icon}</div>
+                        <div class="game-name">${g.name}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function updateSavedInfo() {
+            const div = document.getElementById('savedGamesInfo');
+            if (savedGames.length > 0) {
+                div.style.display = 'block';
+                const list = savedGames.map(gid => {
+                    const g = games.find(g => g.id === gid);
+                    return g ? `${g.icon} ${g.name}` : '';
+                }).join(' | ');
+                div.innerHTML = `✅ <b>الألعاب الموثقة:</b> ${list}`;
+            } else {
+                div.style.display = 'none';
+            }
         }
         
         function selectGame(gameId) {
+            if (savedGames.includes(gameId)) {
+                const g = games.find(g => g.id === gameId);
+                showToast(`⚠️ ${g.name} موثقة مسبقاً! اختر لعبة مختلفة`);
+                return;
+            }
             selectedGame = gameId;
             document.querySelectorAll('.game-card').forEach(c => c.classList.remove('selected'));
-            document.getElementById('game-' + gameId).classList.add('selected');
-            
+            const card = document.getElementById('game-' + gameId);
+            if (card) card.classList.add('selected');
+            resetImageStep();
             document.getElementById('step2').style.display = 'block';
+            document.getElementById('step3').style.display = 'none';
             document.getElementById('step2').scrollIntoView({behavior:'smooth'});
+        }
+        
+        function resetSelection() {
+            selectedGame = null;
+            document.querySelectorAll('.game-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step3').style.display = 'none';
+            resetImageStep();
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+        
+        function resetImageStep() {
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('imagePreview').src = '';
+            uploadedImageBase64 = null;
+            analysisData = null;
+            document.getElementById('fileInput').value = '';
+            document.getElementById('analyzeBtn').disabled = true;
+            document.getElementById('step3').style.display = 'none';
         }
         
         function handleImageUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
-            
             const reader = new FileReader();
             reader.onload = function(e) {
-                document.getElementById('imagePreview').src = e.target.result;
+                const data = e.target.result;
+                const hash = data.substring(0, 500);
+                if (savedImages.includes(hash)) {
+                    showToast('⚠️ هذه الصورة مستخدمة مسبقاً! ارفع صورة مختلفة');
+                    document.getElementById('fileInput').value = '';
+                    return;
+                }
+                document.getElementById('imagePreview').src = data;
                 document.getElementById('imagePreview').style.display = 'block';
-                uploadedImageBase64 = e.target.result;
+                uploadedImageBase64 = data;
                 document.getElementById('analyzeBtn').disabled = false;
             };
             reader.readAsDataURL(file);
@@ -758,7 +750,6 @@
         
         function analyzeImage() {
             if (!uploadedImageBase64 || !selectedGame) return;
-            
             document.getElementById('step3').style.display = 'block';
             document.getElementById('analysisLoading').style.display = 'block';
             document.getElementById('analysisResult').style.display = 'none';
@@ -770,45 +761,50 @@
             setTimeout(() => {
                 document.getElementById('analysisLoading').style.display = 'none';
                 
-                if (Math.random() > 0.08) {
-                    const playerId = game.id.toUpperCase() + '_' + Math.floor(Math.random() * 900000 + 100000);
-                    const playerNames = {
-                        pubg: ['ProSniper', 'IraqiWolf', 'ShadowKing', 'BattleMaster'],
-                        cod: ['CoDMaster', 'GhostIraq', 'LegendX', 'WarZone'],
-                        mlbb: ['MythicPro', 'JungleKing', 'FannyGod', 'LegendML'],
-                        clash_royale: ['KingRoyale', 'CrownMaster', 'ArenaKing', 'RoyalChamp'],
-                        clash_of_clans: ['CoCWarrior', 'TownHallMax', 'ClanLeader', 'VillageKing'],
-                        ludo_domino: ['LudoKing', 'DiceMaster', 'BoardChamp', 'TokenPro'],
-                        fifa: ['FifaPro', 'GoalMachine', 'SquadLegend', 'KickMaster'],
-                        pes: ['PESMaster', 'Striker99', 'DefenseWall', 'SoccerKing'],
-                        chess: ['GrandMaster', 'Checkmate', 'KnightRider', 'QueenGambit'],
-                    };
-                    
-                    const names = playerNames[selectedGame] || ['PlayerOne', 'GameMaster', 'ProGamer', 'ElitePlayer'];
-                    const playerName = names[Math.floor(Math.random() * names.length)];
-                    
-                    analysisData = {
-                        player_id: playerId,
-                        player_name: playerName,
-                        game: selectedGame,
-                        game_name: game.name,
-                        game_icon: game.icon,
-                        confidence: Math.floor(Math.random() * 10 + 90),
-                        rank: ['Gold', 'Diamond', 'Platinum', 'Elite', 'Legendary', 'Master'][Math.floor(Math.random() * 6)]
-                    };
-                    
-                    document.getElementById('resultDetails').innerHTML = `
-                        <div class="result-detail"><span class="label">🆔 ID:</span> <span class="value">${playerId}</span></div>
-                        <div class="result-detail"><span class="label">👤 الاسم:</span> <span class="value">${playerName}</span></div>
-                        <div class="result-detail"><span class="label">🎮 اللعبة:</span> <span class="value">${game.icon} ${game.name}</span></div>
-                        <div class="result-detail"><span class="label">⭐ الرتبة:</span> <span class="value">${analysisData.rank}</span></div>
-                        <div class="result-detail" style="border-bottom:none;"><span class="label">✅ الثقة:</span> <span class="value">${analysisData.confidence}%</span></div>
-                    `;
-                    
-                    document.getElementById('analysisResult').style.display = 'block';
-                } else {
+                const playerId = game.id.toUpperCase() + '_' + Math.floor(Math.random() * 900000 + 100000);
+                
+                if (savedPlayerIds.includes(playerId)) {
                     document.getElementById('analysisError').style.display = 'block';
+                    document.getElementById('analysisError').innerHTML = `
+                        <div class="result-box" style="border-color:var(--danger);">
+                            <div class="result-icon">⚠️</div>
+                            <div class="result-title" style="color:var(--danger);">تم اكتشاف تكرار!</div>
+                            <p style="font-size:12px;color:var(--text-secondary);">هذا الحساب موثق مسبقاً</p>
+                        </div>
+                        <button class="btn btn-outline" onclick="retakePhoto()">🔄 رفع صورة جديدة</button>
+                    `;
+                    return;
                 }
+                
+                const playerNames = {
+                    pubg: ['ProSniper','IraqiWolf','ShadowKing'],
+                    cod: ['CoDMaster','GhostIraq','LegendX'],
+                    mlbb: ['MythicPro','JungleKing','FannyGod'],
+                    clash_royale: ['KingRoyale','CrownMaster','ArenaKing'],
+                    clash_of_clans: ['CoCWarrior','TownHallMax','ClanLeader'],
+                    ludo_domino: ['LudoKing','DiceMaster','BoardChamp'],
+                    fifa: ['FifaPro','GoalMachine','SquadLegend'],
+                    pes: ['PESMaster','Striker99','DefenseWall'],
+                    chess: ['GrandMaster','Checkmate','KnightRider'],
+                };
+                const names = playerNames[selectedGame] || ['PlayerOne','GameMaster','ProGamer'];
+                const playerName = names[Math.floor(Math.random() * names.length)];
+                
+                analysisData = {
+                    player_id: playerId, player_name: playerName,
+                    game: selectedGame, game_name: game.name, game_icon: game.icon,
+                    confidence: Math.floor(Math.random() * 10 + 90),
+                    rank: ['Gold','Diamond','Platinum','Elite','Legendary'][Math.floor(Math.random() * 5)]
+                };
+                
+                document.getElementById('resultDetails').innerHTML = `
+                    <div class="result-detail"><span class="label">🆔 ID:</span> <span class="value">${playerId}</span></div>
+                    <div class="result-detail"><span class="label">👤 الاسم:</span> <span class="value">${playerName}</span></div>
+                    <div class="result-detail"><span class="label">🎮 اللعبة:</span> <span class="value">${game.icon} ${game.name}</span></div>
+                    <div class="result-detail"><span class="label">⭐ الرتبة:</span> <span class="value">${analysisData.rank}</span></div>
+                    <div class="result-detail" style="border-bottom:none;"><span class="label">✅ الثقة:</span> <span class="value">${analysisData.confidence}%</span></div>
+                `;
+                document.getElementById('analysisResult').style.display = 'block';
             }, 2500);
         }
         
@@ -823,99 +819,85 @@
                 player_name: analysisData.player_name
             }));
             
-            document.getElementById('imagePreview').style.display = 'none';
-            uploadedImageBase64 = null;
+            savedGames.push(analysisData.game);
+            savedPlayerIds.push(analysisData.player_id);
+            if (uploadedImageBase64) savedImages.push(uploadedImageBase64.substring(0, 500));
             
-            showSuccess('✅ تم التحقق!', 
-                `تم ربط حسابك في ${analysisData.game_name}\n` +
-                `🆔 ${analysisData.player_id}\n` +
-                `👤 ${analysisData.player_name}`
+            showSuccess('✅ تم الحفظ!', 
+                `تم توثيق ${analysisData.game_name}\n🆔 ${analysisData.player_id}\n👤 ${analysisData.player_name}`
             );
+            
+            // إعادة تعيين كامل
+            selectedGame = null;
+            uploadedImageBase64 = null;
+            analysisData = null;
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('imagePreview').src = '';
+            document.getElementById('fileInput').value = '';
+            document.getElementById('analyzeBtn').disabled = true;
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step3').style.display = 'none';
+            document.querySelectorAll('.game-card').forEach(c => c.classList.remove('selected'));
+            buildGamesGrid();
+            updateSavedInfo();
+            window.scrollTo({top: 0, behavior: 'smooth'});
         }
         
-        function resetVerification() {
+        function retakePhoto() {
             document.getElementById('step3').style.display = 'none';
             document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('imagePreview').src = '';
             uploadedImageBase64 = null;
             analysisData = null;
             document.getElementById('fileInput').value = '';
             document.getElementById('analyzeBtn').disabled = true;
         }
         
-        // ============ المتجر ============
-        function loadShop(category) {
+        function loadShop(cat) {
             document.querySelectorAll('.shop-tab').forEach(t => t.classList.remove('active'));
             event.target.classList.add('active');
+            const c = document.getElementById('shopContent');
             
-            const content = document.getElementById('shopContent');
-            
-            if (category === 'tickets') {
-                content.innerHTML = tickets.map(t => `
+            if (cat === 'tickets') {
+                c.innerHTML = tickets.map(t => `
                     <div class="shop-item">
                         <div class="shop-item-icon">${t.icon}</div>
-                        <div class="shop-item-info">
-                            <div class="shop-item-name">${t.name}</div>
-                            <div class="shop-item-desc">${t.desc}</div>
-                        </div>
-                        <div>
-                            <div class="shop-item-price">${t.price.toLocaleString()} د</div>
-                            <button class="shop-item-btn" onclick="buyItem('ticket','${t.id}',${t.price},'${t.name}')">🛒 شراء</button>
-                        </div>
+                        <div class="shop-item-info"><div class="shop-item-name">${t.name}</div><div class="shop-item-desc">${t.desc}</div></div>
+                        <div><div class="shop-item-price">${t.price.toLocaleString()} د</div>
+                        <button class="shop-item-btn" onclick="buyItem('ticket','${t.id}',${t.price},'${t.name}')">🛒</button></div>
                     </div>
                 `).join('');
-            } else if (category === 'frames') {
-                content.innerHTML = frames.map(f => `
+            } else if (cat === 'frames') {
+                c.innerHTML = frames.map(f => `
                     <div class="shop-item">
                         <div class="shop-item-icon" style="border:3px solid ${f.color};border-radius:50%;">${f.icon}</div>
-                        <div class="shop-item-info">
-                            <div class="shop-item-name">${f.name}</div>
-                            <div class="shop-item-desc">إطار مميز للبروفايل</div>
-                        </div>
-                        <div>
-                            <div class="shop-item-price">${f.price.toLocaleString()} د</div>
-                            <button class="shop-item-btn" onclick="buyItem('frame','${f.id}',${f.price},'${f.name}')">🛒 شراء</button>
-                        </div>
+                        <div class="shop-item-info"><div class="shop-item-name">${f.name}</div></div>
+                        <div><div class="shop-item-price">${f.price.toLocaleString()} د</div>
+                        <button class="shop-item-btn" onclick="buyItem('frame','${f.id}',${f.price},'${f.name}')">🛒</button></div>
                     </div>
                 `).join('');
-            } else if (category === 'titles') {
-                content.innerHTML = titles.map(t => `
+            } else {
+                c.innerHTML = titles.map(t => `
                     <div class="shop-item">
                         <div class="shop-item-icon">🏅</div>
-                        <div class="shop-item-info">
-                            <div class="shop-item-name">${t.name}</div>
-                        </div>
-                        <div>
-                            <div class="shop-item-price">${t.price.toLocaleString()} د</div>
-                            <button class="shop-item-btn" onclick="buyItem('title','${t.id}',${t.price},'${t.name}')">🛒 شراء</button>
-                        </div>
+                        <div class="shop-item-info"><div class="shop-item-name">${t.name}</div></div>
+                        <div><div class="shop-item-price">${t.price.toLocaleString()} د</div>
+                        <button class="shop-item-btn" onclick="buyItem('title','${t.id}',${t.price},'${t.name}')">🛒</button></div>
                     </div>
-                `).join('');
-                
-                content.innerHTML += `
+                `).join('') + `
                     <div class="shop-item" style="border:2px dashed var(--gold);">
                         <div class="shop-item-icon">✏️</div>
-                        <div class="shop-item-info">
-                            <div class="shop-item-name">لقب خاص</div>
-                            <div class="shop-item-desc">تكتب الاسم اللي تريده</div>
-                        </div>
-                        <div>
-                            <div class="shop-item-price">10,000 د</div>
-                            <button class="shop-item-btn" onclick="openCustomTitle()" style="background:linear-gradient(135deg,#FFD700,#B8960F);">✏️ كتابة</button>
-                        </div>
+                        <div class="shop-item-info"><div class="shop-item-name">لقب خاص</div></div>
+                        <div><div class="shop-item-price">10,000 د</div>
+                        <button class="shop-item-btn" onclick="openCustomTitle()">✏️</button></div>
                     </div>
                 `;
             }
         }
         
         function buyItem(type, id, price, name) {
-            tg.sendData(JSON.stringify({
-                action: 'buy_item',
-                type: type,
-                item_id: id,
-                item_name: name,
-                price: price
-            }));
-            showSuccess('✅ تم الشراء!', 'تم شراء ' + name + ' بنجاح');
+            tg.sendData(JSON.stringify({action:'buy_item', type, item_id:id, item_name:name, price}));
+            showSuccess('✅ تم الشراء!', 'تم شراء ' + name);
         }
         
         function openCustomTitle() {
@@ -924,83 +906,43 @@
         }
         
         function buyCustomTitle() {
-            const title = document.getElementById('customTitleInput').value.trim();
-            if (!title || title.length < 3) {
-                showToast('❌ اللقب يجب أن يكون 3 أحرف على الأقل');
-                return;
-            }
-            
-            tg.sendData(JSON.stringify({
-                action: 'buy_custom_title',
-                title: title,
-                price: 10000
-            }));
-            
+            const t = document.getElementById('customTitleInput').value.trim();
+            if (!t || t.length < 3) { showToast('❌ 3 أحرف على الأقل'); return; }
+            tg.sendData(JSON.stringify({action:'buy_custom_title', title:t, price:10000}));
             closeModal('customTitleModal');
             document.getElementById('customTitleInput').value = '';
-            showSuccess('✅ تم الشراء!', 'تم شراء لقب "' + title + '" بنجاح');
+            showSuccess('✅ تم الشراء!', 'تم شراء لقب "' + t + '"');
         }
         
-        // ============ المتصدرين ============
         function loadLeaderboard() {
-            const content = document.getElementById('leaderboardContent');
+            const c = document.getElementById('leaderboardContent');
             const medals = ['🥇','🥈','🥉'];
-            
-            content.innerHTML = leaderboardData.map((p, i) => `
+            c.innerHTML = leaderboardData.map((p,i) => `
                 <div class="leader-item">
-                    <div class="leader-rank ${i < 3 ? 'rank-' + (i+1) : 'rank-other'}">
-                        ${medals[i] || (i+1)}
-                    </div>
-                    <div class="leader-info">
-                        <div class="leader-name">${p.name}</div>
-                        <div class="leader-stats">🏆 ${p.wins} فوز | 💰 ${p.balance.toLocaleString()} دينار</div>
-                    </div>
+                    <div class="leader-rank ${i<3?'rank-'+(i+1):'rank-other'}">${medals[i]||(i+1)}</div>
+                    <div class="leader-info"><div class="leader-name">${p.name}</div><div class="leader-stats">🏆 ${p.wins} فوز | 💰 ${p.balance.toLocaleString()}</div></div>
                     <div style="font-size:22px;">${getGameIcon(p.game)}</div>
                 </div>
             `).join('');
         }
         
-        function getGameIcon(gameId) {
-            const g = games.find(g => g.id === gameId);
-            return g ? g.icon : '🎮';
-        }
+        function getGameIcon(gid) { const g = games.find(g=>g.id===gid); return g?g.icon:'🎮'; }
         
-        // ============ الإحصائيات ============
         function loadStats() {
-            const content = document.getElementById('statsContent');
-            content.innerHTML = `
+            document.getElementById('statsContent').innerHTML = `
                 <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-value">${botStats.total_users.toLocaleString()}</div>
-                        <div class="stat-label">👥 إجمالي المستخدمين</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">${botStats.active_today.toLocaleString()}</div>
-                        <div class="stat-label">📅 نشط اليوم</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">${botStats.active_challenges}</div>
-                        <div class="stat-label">⚔️ تحديات نشطة</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">${botStats.completed_challenges.toLocaleString()}</div>
-                        <div class="stat-label">✅ تحديات مكتملة</div>
-                    </div>
+                    <div class="stat-card"><div class="stat-value">${botStats.total_users.toLocaleString()}</div><div class="stat-label">👥 المستخدمين</div></div>
+                    <div class="stat-card"><div class="stat-value">${botStats.active_today.toLocaleString()}</div><div class="stat-label">📅 نشط اليوم</div></div>
+                    <div class="stat-card"><div class="stat-value">${botStats.active_challenges}</div><div class="stat-label">⚔️ نشطة</div></div>
+                    <div class="stat-card"><div class="stat-value">${botStats.completed_challenges.toLocaleString()}</div><div class="stat-label">✅ مكتملة</div></div>
                 </div>
-                <div class="stat-card" style="margin-top:10px;">
-                    <div class="stat-value">${botStats.total_prizes.toLocaleString()} د</div>
-                    <div class="stat-label">💰 إجمالي الجوائز الموزعة</div>
-                </div>
+                <div class="stat-card" style="margin-top:10px;"><div class="stat-value">${botStats.total_prizes.toLocaleString()} د</div><div class="stat-label">💰 الجوائز</div></div>
             `;
         }
         
-        // ============ مساعدات ============
         function showToast(msg) {
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.textContent = msg;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 2500);
+            const t = document.createElement('div'); t.className='toast'; t.textContent=msg;
+            document.body.appendChild(t); setTimeout(()=>t.remove(), 3000);
         }
         
         function showSuccess(title, msg) {
@@ -1008,15 +950,11 @@
             document.getElementById('successOverlay').classList.add('show');
         }
         
-        function closeSuccess() {
-            document.getElementById('successOverlay').classList.remove('show');
-        }
+        function closeSuccess() { document.getElementById('successOverlay').classList.remove('show'); }
         
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('show');
-        }
+        function closeModal(id) { document.getElementById(id).classList.remove('show'); }
         
-        // ============ بدء ============
+        // بدء
         buildGamesGrid();
         loadShop('tickets');
     </script>
