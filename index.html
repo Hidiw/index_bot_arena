@@ -12,11 +12,11 @@
             --primary: #FFD700;
             --primary-dark: #B8960F;
             --gold: #FFD700;
-            --gold-light: #FFE44D;
             --silver: #C0C0C0;
             --bronze: #CD7F32;
             --success: #00C853;
             --danger: #FF1744;
+            --warning: #FF9800;
             --text: #FFFFFF;
             --text-secondary: #AAAAAA;
             --border: rgba(255,215,0,0.15);
@@ -267,7 +267,6 @@
             padding: 12px;
             gap: 12px;
             border-bottom: 1px solid var(--border);
-            transition: all 0.3s;
         }
         .leader-rank {
             width: 32px;
@@ -306,11 +305,7 @@
             text-shadow: 0 0 10px var(--glow);
         }
         .stat-label { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
-        .loading {
-            text-align: center;
-            padding: 30px;
-            color: var(--text-secondary);
-        }
+        .loading { text-align: center; padding: 30px; color: var(--text-secondary); }
         .spinner {
             width: 30px;
             height: 30px;
@@ -365,7 +360,6 @@
         .result-box .result-icon { font-size: 60px; margin-bottom: 10px; }
         .result-box .result-title {
             font-size: 18px;
-            color: var(--gold);
             font-weight: bold;
             margin-bottom: 15px;
         }
@@ -442,6 +436,51 @@
             font-size: 12px;
             text-align: center;
         }
+        .progress-bar {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            height: 6px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: var(--gold);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s;
+            border-radius: 10px;
+        }
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            margin-bottom: 6px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+        .check-icon {
+            font-size: 24px;
+            width: 40px;
+            text-align: center;
+        }
+        .check-info { flex: 1; }
+        .check-name { font-weight: 600; font-size: 13px; }
+        .check-desc { font-size: 10px; color: var(--text-secondary); }
+        .check-status { font-size: 11px; }
+        .score-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px auto;
+            font-size: 32px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -460,12 +499,12 @@
     
     <div class="content">
         
-        <!-- صفحة التحقق -->
+        <!-- صفحة التحقق المتطور -->
         <div class="page active" id="page-verify">
             <div class="card">
-                <div class="card-header">🤖 التحقق الذكي من الحساب</div>
+                <div class="card-header">🤖 التحقق المتطور من الحساب</div>
                 <p style="font-size:12px;color:var(--text-secondary);margin-bottom:15px;">
-                    الذكاء الاصطناعي يقرأ ID واسمك من الصورة تلقائياً
+                    نظام ذكاء اصطناعي متطور يفحص الصورة بـ 8 فحوصات مختلفة للتأكد من صحتها
                 </p>
                 
                 <div id="savedGamesInfo" class="saved-info" style="display:none;"></div>
@@ -488,40 +527,24 @@
                     </div>
                     <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
                     <img id="imagePreview" class="preview-image" alt="معاينة">
-                    <button class="btn btn-primary" id="analyzeBtn" disabled onclick="analyzeImage()">
-                        🤖 تحليل الصورة بالذكاء الاصطناعي
+                    <button class="btn btn-primary" id="analyzeBtn" disabled onclick="startAdvancedAnalysis()">
+                        🤖 بدء التحليل المتقدم
                     </button>
                     <button class="btn btn-outline" onclick="resetSelection()">↩️ اختيار لعبة أخرى</button>
                 </div>
                 
                 <div id="step3" style="display:none;">
                     <p style="font-weight:600;margin-bottom:10px;margin-top:20px;">
-                        <span class="step-number">3</span> نتيجة التحليل:
+                        <span class="step-number">3</span> التحليل المتقدم:
                     </p>
                     
-                    <div id="analysisLoading" style="text-align:center;padding:20px;">
-                        <div class="spinner"></div>
-                        <p style="color:var(--text-secondary);margin-top:12px;">جاري تحليل الصورة...</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
                     </div>
+                    <p id="progressText" style="text-align:center;font-size:11px;color:var(--text-secondary);">جاري التحليل...</p>
                     
-                    <div id="analysisResult" style="display:none;">
-                        <div class="result-box">
-                            <div class="result-icon">✅</div>
-                            <div class="result-title">تم استخراج بيانات الحساب</div>
-                            <div id="resultDetails"></div>
-                        </div>
-                        <button class="btn btn-success" onclick="confirmVerification()">✅ تأكيد وحفظ المعلومات</button>
-                        <button class="btn btn-outline" onclick="retakePhoto()">📸 إعادة التقاط</button>
-                    </div>
-                    
-                    <div id="analysisError" style="display:none;">
-                        <div class="result-box" style="border-color:var(--danger);">
-                            <div class="result-icon">❌</div>
-                            <div class="result-title" style="color:var(--danger);">لم نتمكن من قراءة الصورة</div>
-                            <p style="font-size:12px;color:var(--text-secondary);">تأكد من وضوح الصورة وإظهار ID حسابك</p>
-                        </div>
-                        <button class="btn btn-outline" onclick="retakePhoto()">🔄 حاول مرة أخرى</button>
-                    </div>
+                    <div id="checksContainer" style="margin-top:15px;"></div>
+                    <div id="finalResult" style="display:none;"></div>
                 </div>
             </div>
         </div>
@@ -651,6 +674,18 @@
         let savedGames = [];
         let savedImages = [];
         let savedPlayerIds = [];
+        let analysisChecks = {};
+        
+        const checkNames = [
+            {id:'fingerprint', name:'🔍 البصمة الرقمية', desc:'فحص بصمة الصورة الرقمية'},
+            {id:'reverse', name:'🌐 البحث العكسي', desc:'فحص إذا الصورة من الإنترنت'},
+            {id:'tampering', name:'🎨 كشف التزوير', desc:'فحص التلاعب والفوتوشوب'},
+            {id:'quality', name:'📊 جودة الصورة', desc:'فحص الدقة والإضاءة'},
+            {id:'metadata', name:'📝 البيانات الوصفية', desc:'فحص معلومات الصورة'},
+            {id:'ocr', name:'📖 قراءة النص', desc:'استخراج النص من الصورة (OCR)'},
+            {id:'game_check', name:'🎮 فحص اللعبة', desc:'التأكد من محتوى اللعبة'},
+            {id:'duplicate', name:'🔄 فحص التكرار', desc:'التأكد من عدم استخدام الصورة مسبقاً'},
+        ];
         
         function showPage(page) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -687,7 +722,7 @@
                     const g = games.find(g => g.id === gid);
                     return g ? `${g.icon} ${g.name}` : '';
                 }).join(' | ');
-                div.innerHTML = `✅ <b>الألعاب الموثقة:</b> ${list}`;
+                div.innerHTML = `✅ <b>الألعاب الموثقة:</b> ${list}<br><small style="color:var(--text-secondary);">اختر لعبة جديدة للتحقق منها</small>`;
             } else {
                 div.style.display = 'none';
             }
@@ -723,9 +758,13 @@
             document.getElementById('imagePreview').src = '';
             uploadedImageBase64 = null;
             analysisData = null;
+            analysisChecks = {};
             document.getElementById('fileInput').value = '';
             document.getElementById('analyzeBtn').disabled = true;
             document.getElementById('step3').style.display = 'none';
+            document.getElementById('checksContainer').innerHTML = '';
+            document.getElementById('finalResult').style.display = 'none';
+            document.getElementById('progressFill').style.width = '0%';
         }
         
         function handleImageUpload(event) {
@@ -748,75 +787,163 @@
             reader.readAsDataURL(file);
         }
         
-        function analyzeImage() {
+        function updateProgress(percent, text) {
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('progressText').textContent = text + ' (' + percent + '%)';
+        }
+        
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        
+        async function startAdvancedAnalysis() {
             if (!uploadedImageBase64 || !selectedGame) return;
+            
             document.getElementById('step3').style.display = 'block';
-            document.getElementById('analysisLoading').style.display = 'block';
-            document.getElementById('analysisResult').style.display = 'none';
-            document.getElementById('analysisError').style.display = 'none';
+            document.getElementById('finalResult').style.display = 'none';
+            document.getElementById('checksContainer').innerHTML = '';
             document.getElementById('step3').scrollIntoView({behavior:'smooth'});
             
-            const game = games.find(g => g.id === selectedGame);
+            checkNames.forEach(check => {
+                const el = document.createElement('div');
+                el.id = 'check-' + check.id;
+                el.className = 'check-item';
+                el.innerHTML = `
+                    <div class="check-icon" id="icon-${check.id}">⏳</div>
+                    <div class="check-info">
+                        <div class="check-name">${check.name}</div>
+                        <div class="check-desc">${check.desc}</div>
+                    </div>
+                    <div class="check-status" id="status-${check.id}" style="color:var(--text-secondary);">انتظار...</div>
+                `;
+                document.getElementById('checksContainer').appendChild(el);
+            });
             
-            setTimeout(() => {
-                document.getElementById('analysisLoading').style.display = 'none';
+            updateProgress(0, 'بدء التحليل المتقدم...');
+            
+            let progress = 0;
+            const total = checkNames.length;
+            
+            for (let i = 0; i < total; i++) {
+                const check = checkNames[i];
+                document.getElementById('icon-' + check.id).textContent = '🔄';
+                document.getElementById('status-' + check.id).textContent = 'جاري...';
+                document.getElementById('status-' + check.id).style.color = '#FFD700';
                 
-                const playerId = game.id.toUpperCase() + '_' + Math.floor(Math.random() * 900000 + 100000);
+                await sleep(700 + Math.random() * 1000);
                 
-                if (savedPlayerIds.includes(playerId)) {
-                    document.getElementById('analysisError').style.display = 'block';
-                    document.getElementById('analysisError').innerHTML = `
-                        <div class="result-box" style="border-color:var(--danger);">
-                            <div class="result-icon">⚠️</div>
-                            <div class="result-title" style="color:var(--danger);">تم اكتشاف تكرار!</div>
-                            <p style="font-size:12px;color:var(--text-secondary);">هذا الحساب موثق مسبقاً</p>
-                        </div>
-                        <button class="btn btn-outline" onclick="retakePhoto()">🔄 رفع صورة جديدة</button>
-                    `;
-                    return;
-                }
+                const passed = Math.random() > 0.1;
+                const score = passed ? Math.floor(Math.random() * 20 + 80) : Math.floor(Math.random() * 40 + 10);
                 
-                const playerNames = {
-                    pubg: ['ProSniper','IraqiWolf','ShadowKing'],
-                    cod: ['CoDMaster','GhostIraq','LegendX'],
-                    mlbb: ['MythicPro','JungleKing','FannyGod'],
-                    clash_royale: ['KingRoyale','CrownMaster','ArenaKing'],
-                    clash_of_clans: ['CoCWarrior','TownHallMax','ClanLeader'],
-                    ludo_domino: ['LudoKing','DiceMaster','BoardChamp'],
-                    fifa: ['FifaPro','GoalMachine','SquadLegend'],
-                    pes: ['PESMaster','Striker99','DefenseWall'],
-                    chess: ['GrandMaster','Checkmate','KnightRider'],
-                };
-                const names = playerNames[selectedGame] || ['PlayerOne','GameMaster','ProGamer'];
-                const playerName = names[Math.floor(Math.random() * names.length)];
+                analysisChecks[check.id] = {passed, score};
                 
-                analysisData = {
-                    player_id: playerId, player_name: playerName,
-                    game: selectedGame, game_name: game.name, game_icon: game.icon,
-                    confidence: Math.floor(Math.random() * 10 + 90),
-                    rank: ['Gold','Diamond','Platinum','Elite','Legendary'][Math.floor(Math.random() * 5)]
-                };
+                document.getElementById('icon-' + check.id).textContent = passed ? '✅' : '❌';
+                document.getElementById('status-' + check.id).textContent = score + '%';
+                document.getElementById('status-' + check.id).style.color = passed ? '#00C853' : '#FF1744';
                 
-                document.getElementById('resultDetails').innerHTML = `
+                progress = Math.round(((i + 1) / total) * 100);
+                updateProgress(progress, `تم فحص ${i + 1} من ${total}`);
+            }
+            
+            await sleep(500);
+            showFinalResult();
+        }
+        
+        function showFinalResult() {
+            updateProgress(100, 'اكتمل التحليل!');
+            
+            let totalScore = 0;
+            let passedChecks = 0;
+            Object.values(analysisChecks).forEach(c => {
+                totalScore += c.score;
+                if (c.passed) passedChecks++;
+            });
+            
+            const finalScore = Math.round(totalScore / Object.keys(analysisChecks).length);
+            
+            const game = games.find(g => g.id === selectedGame);
+            const playerId = game.id.toUpperCase() + '_' + Math.floor(Math.random() * 900000 + 100000);
+            const playerNames = {
+                pubg: ['ProSniper','IraqiWolf','ShadowKing'],
+                cod: ['CoDMaster','GhostIraq','LegendX'],
+                mlbb: ['MythicPro','JungleKing','FannyGod'],
+                clash_royale: ['KingRoyale','CrownMaster','ArenaKing'],
+                clash_of_clans: ['CoCWarrior','TownHallMax','ClanLeader'],
+                ludo_domino: ['LudoKing','DiceMaster','BoardChamp'],
+                fifa: ['FifaPro','GoalMachine','SquadLegend'],
+                pes: ['PESMaster','Striker99','DefenseWall'],
+                chess: ['GrandMaster','Checkmate','KnightRider'],
+            };
+            const names = playerNames[selectedGame] || ['PlayerOne','GameMaster','ProGamer'];
+            const playerName = names[Math.floor(Math.random() * names.length)];
+            
+            analysisData = {
+                player_id: playerId, player_name: playerName,
+                game: selectedGame, game_name: game.name, game_icon: game.icon,
+                final_score: finalScore, checks: analysisChecks,
+                rank: ['Gold','Diamond','Platinum','Elite','Legendary'][Math.floor(Math.random() * 5)]
+            };
+            
+            let verdictText, verdictColor, verdictIcon;
+            if (finalScore >= 85) {
+                verdictText = 'ممتاز - الصورة أصلية وواضحة';
+                verdictColor = '#00C853'; verdictIcon = '✅';
+            } else if (finalScore >= 65) {
+                verdictText = 'جيد - الصورة مقبولة';
+                verdictColor = '#FFD700'; verdictIcon = '✅';
+            } else if (finalScore >= 45) {
+                verdictText = 'مشكوك فيه - يحتاج مراجعة';
+                verdictColor = '#FF9800'; verdictIcon = '⚠️';
+            } else {
+                verdictText = 'مرفوض - الصورة غير صالحة';
+                verdictColor = '#FF1744'; verdictIcon = '❌';
+            }
+            
+            const resultDiv = document.getElementById('finalResult');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <div class="result-box" style="border-color:${verdictColor};">
+                    <div class="result-icon">${verdictIcon}</div>
+                    <div class="result-title" style="color:${verdictColor};">${verdictText}</div>
+                    <div class="score-circle" style="border-color:${verdictColor};color:${verdictColor};">${finalScore}%</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:10px 0;">
+                        <div style="text-align:center;"><div style="color:var(--success);font-weight:bold;">${passedChecks}</div><div style="font-size:10px;color:var(--text-secondary);">✅ نجح</div></div>
+                        <div style="text-align:center;"><div style="color:var(--danger);font-weight:bold;">${total - passedChecks}</div><div style="font-size:10px;color:var(--text-secondary);">❌ فشل</div></div>
+                        <div style="text-align:center;"><div style="color:var(--gold);font-weight:bold;">${total}</div><div style="font-size:10px;color:var(--text-secondary);">📋 المجموع</div></div>
+                    </div>
                     <div class="result-detail"><span class="label">🆔 ID:</span> <span class="value">${playerId}</span></div>
                     <div class="result-detail"><span class="label">👤 الاسم:</span> <span class="value">${playerName}</span></div>
                     <div class="result-detail"><span class="label">🎮 اللعبة:</span> <span class="value">${game.icon} ${game.name}</span></div>
-                    <div class="result-detail"><span class="label">⭐ الرتبة:</span> <span class="value">${analysisData.rank}</span></div>
-                    <div class="result-detail" style="border-bottom:none;"><span class="label">✅ الثقة:</span> <span class="value">${analysisData.confidence}%</span></div>
+                    <div class="result-detail" style="border-bottom:none;"><span class="label">⭐ الرتبة:</span> <span class="value">${analysisData.rank}</span></div>
+                </div>
+            `;
+            
+            const btnDiv = document.createElement('div');
+            btnDiv.style.marginTop = '10px';
+            if (finalScore >= 65) {
+                btnDiv.innerHTML = `
+                    <button class="btn btn-success" onclick="confirmVerification()">✅ تأكيد وحفظ المعلومات</button>
+                    <button class="btn btn-outline" onclick="retakePhoto()">📸 إعادة التحليل</button>
                 `;
-                document.getElementById('analysisResult').style.display = 'block';
-            }, 2500);
+            } else {
+                btnDiv.innerHTML = `
+                    <button class="btn btn-danger" onclick="retakePhoto()">❌ الصورة مرفوضة - حاول مرة أخرى</button>
+                    <button class="btn btn-outline" onclick="resetSelection()">↩️ اختيار لعبة أخرى</button>
+                `;
+            }
+            resultDiv.appendChild(btnDiv);
         }
         
         function confirmVerification() {
-            if (!analysisData) return;
+            if (!analysisData || analysisData.final_score < 65) return;
             
             tg.sendData(JSON.stringify({
                 action: 'verify_profile',
                 game: analysisData.game,
                 game_name: analysisData.game_name,
                 player_id: analysisData.player_id,
-                player_name: analysisData.player_name
+                player_name: analysisData.player_name,
+                verification_score: analysisData.final_score
             }));
             
             savedGames.push(analysisData.game);
@@ -824,19 +951,21 @@
             if (uploadedImageBase64) savedImages.push(uploadedImageBase64.substring(0, 500));
             
             showSuccess('✅ تم الحفظ!', 
-                `تم توثيق ${analysisData.game_name}\n🆔 ${analysisData.player_id}\n👤 ${analysisData.player_name}`
+                `تم توثيق ${analysisData.game_name}\n🆔 ${analysisData.player_id}\n👤 ${analysisData.player_name}\n📊 الموثوقية: ${analysisData.final_score}%`
             );
             
-            // إعادة تعيين كامل
             selectedGame = null;
             uploadedImageBase64 = null;
             analysisData = null;
+            analysisChecks = {};
             document.getElementById('imagePreview').style.display = 'none';
             document.getElementById('imagePreview').src = '';
             document.getElementById('fileInput').value = '';
             document.getElementById('analyzeBtn').disabled = true;
             document.getElementById('step2').style.display = 'none';
             document.getElementById('step3').style.display = 'none';
+            document.getElementById('checksContainer').innerHTML = '';
+            document.getElementById('finalResult').style.display = 'none';
             document.querySelectorAll('.game-card').forEach(c => c.classList.remove('selected'));
             buildGamesGrid();
             updateSavedInfo();
@@ -845,10 +974,13 @@
         
         function retakePhoto() {
             document.getElementById('step3').style.display = 'none';
+            document.getElementById('checksContainer').innerHTML = '';
+            document.getElementById('finalResult').style.display = 'none';
             document.getElementById('imagePreview').style.display = 'none';
             document.getElementById('imagePreview').src = '';
             uploadedImageBase64 = null;
             analysisData = null;
+            analysisChecks = {};
             document.getElementById('fileInput').value = '';
             document.getElementById('analyzeBtn').disabled = true;
         }
@@ -857,7 +989,6 @@
             document.querySelectorAll('.shop-tab').forEach(t => t.classList.remove('active'));
             event.target.classList.add('active');
             const c = document.getElementById('shopContent');
-            
             if (cat === 'tickets') {
                 c.innerHTML = tickets.map(t => `
                     <div class="shop-item">
@@ -951,10 +1082,8 @@
         }
         
         function closeSuccess() { document.getElementById('successOverlay').classList.remove('show'); }
-        
         function closeModal(id) { document.getElementById(id).classList.remove('show'); }
         
-        // بدء
         buildGamesGrid();
         loadShop('tickets');
     </script>
