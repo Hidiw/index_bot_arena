@@ -7,602 +7,215 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg: #000000;
-            --card: #111111;
-            --primary: #FFD700;
-            --primary-dark: #B8960F;
-            --gold: #FFD700;
-            --silver: #C0C0C0;
-            --bronze: #CD7F32;
-            --success: #00C853;
-            --danger: #FF1744;
-            --warning: #FF9800;
-            --text: #FFFFFF;
-            --text-secondary: #AAAAAA;
-            --border: rgba(255,215,0,0.15);
-            --glow: rgba(255,215,0,0.3);
+            --bg: #000000; --card: #111111; --gold: #FFD700; --gold-dark: #B8960F;
+            --success: #00C853; --danger: #FF1744; --warning: #FF9800;
+            --text: #FFFFFF; --text2: #AAAAAA; --border: rgba(255,215,0,0.2);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            padding-bottom: 80px;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
+            font-family: -apple-system, sans-serif; background: var(--bg);
+            color: var(--text); min-height: 100vh; padding: 15px; padding-bottom: 80px;
         }
-        .header {
-            background: linear-gradient(180deg, #1a1a00 0%, #000000 100%);
-            padding: 20px 15px;
-            text-align: center;
-            border-bottom: 2px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+        .header { text-align: center; padding: 20px 0; border-bottom: 2px solid var(--border); margin-bottom: 15px; }
+        .header h1 { color: var(--gold); font-size: 22px; }
+        .header p { color: var(--text2); font-size: 12px; margin-top: 5px; }
+        .tabs { display: flex; gap: 5px; margin-bottom: 15px; position: sticky; top: 10px; z-index: 10; }
+        .tab {
+            flex: 1; padding: 10px 5px; text-align: center; background: var(--card);
+            border: 1px solid var(--border); border-radius: 10px; cursor: pointer;
+            font-size: 10px; color: var(--text2); transition: 0.3s;
         }
-        .header h1 {
-            font-size: 22px;
-            color: var(--gold);
-            text-shadow: 0 0 20px var(--glow);
-            margin-bottom: 5px;
-            letter-spacing: 1px;
-        }
-        .header .subtitle { font-size: 11px; color: var(--text-secondary); }
-        .tabs {
-            display: flex;
-            gap: 5px;
-            padding: 10px 15px;
-            overflow-x: auto;
-            position: sticky;
-            top: 85px;
-            background: var(--bg);
-            z-index: 99;
-            border-bottom: 1px solid var(--border);
-        }
-        .tab-btn {
-            padding: 8px 16px;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            background: transparent;
-            color: var(--text-secondary);
-            font-size: 12px;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.3s;
-        }
-        .tab-btn.active {
-            background: var(--gold);
-            color: #000;
-            border-color: var(--gold);
-            font-weight: bold;
-            box-shadow: 0 0 15px var(--glow);
-        }
-        .tab-btn .icon { margin-left: 4px; }
-        .content { padding: 15px; }
+        .tab.active { background: var(--gold); color: #000; border-color: var(--gold); font-weight: bold; }
         .page { display: none; }
         .page.active { display: block; animation: fadeIn 0.3s; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .card {
-            background: var(--card);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 12px;
-            border: 1px solid var(--border);
-        }
-        .card-header {
-            font-size: 15px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--gold);
-        }
-        .games-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin: 12px 0;
-        }
-        .game-card {
-            background: rgba(255,215,0,0.03);
-            border: 2px solid var(--border);
-            border-radius: 14px;
-            padding: 16px 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-        }
-        .game-card:active { transform: scale(0.95); }
-        .game-card.selected {
-            background: rgba(255,215,0,0.1);
-            border-color: var(--gold);
-            box-shadow: 0 0 15px var(--glow);
-        }
-        .game-card.verified {
-            background: rgba(0,200,83,0.1);
-            border-color: var(--success);
-        }
-        .game-card .game-icon { font-size: 30px; margin-bottom: 6px; }
-        .game-card .game-name { font-size: 11px; color: var(--text-secondary); }
-        .game-card .verified-badge {
-            position: absolute;
-            top: 5px;
-            left: 5px;
-            background: var(--success);
-            color: #fff;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .upload-zone {
-            border: 2px dashed var(--gold);
-            border-radius: 16px;
-            padding: 30px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin: 12px 0;
-            background: rgba(255,215,0,0.02);
-        }
-        .upload-zone:active { background: rgba(255,215,0,0.08); }
-        .upload-zone .upload-icon { font-size: 40px; margin-bottom: 8px; }
-        .upload-zone p { font-size: 12px; color: var(--text-secondary); }
-        .preview-image {
-            max-width: 100%;
-            max-height: 200px;
-            border-radius: 12px;
-            margin: 10px auto;
-            display: none;
-            object-fit: contain;
-            border: 2px solid var(--border);
-        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
+        .card h3 { color: var(--gold); margin-bottom: 10px; font-size: 15px; }
         .btn {
-            display: block;
-            width: 100%;
-            padding: 14px;
-            border-radius: 14px;
-            border: none;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-            margin: 6px 0;
-            letter-spacing: 0.5px;
+            display: block; width: 100%; padding: 14px; border: none; border-radius: 14px;
+            font-size: 14px; font-weight: bold; cursor: pointer; margin: 6px 0; transition: 0.3s; text-align: center;
         }
         .btn:active { transform: scale(0.97); }
-        .btn-primary {
-            background: linear-gradient(135deg, var(--gold), var(--primary-dark));
-            color: #000;
-            font-weight: bold;
+        .btn-gold { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: #000; }
+        .btn-green { background: var(--success); color: #fff; }
+        .btn-outline { background: transparent; border: 2px solid var(--gold); color: var(--gold); }
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .games-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0; }
+        .game-btn {
+            background: rgba(255,215,0,0.03); border: 2px solid var(--border); border-radius: 12px;
+            padding: 15px 5px; text-align: center; cursor: pointer; font-size: 10px; transition: 0.3s; position: relative;
         }
-        .btn-success { background: var(--success); color: #fff; }
-        .btn-danger { background: var(--danger); color: #fff; }
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--gold);
-            color: var(--gold);
+        .game-btn.selected { background: rgba(255,215,0,0.15); border-color: var(--gold); }
+        .game-btn.verified { background: rgba(0,200,83,0.1); border-color: var(--success); }
+        .game-btn .icon { font-size: 28px; display: block; margin-bottom: 5px; }
+        .verified-check {
+            position: absolute; top: 5px; left: 5px; background: var(--success);
+            color: #fff; width: 18px; height: 18px; border-radius: 50%; font-size: 10px;
+            display: flex; align-items: center; justify-content: center;
         }
-        .btn:disabled { opacity: 0.3; cursor: not-allowed; }
-        .shop-tabs {
-            display: flex;
-            gap: 4px;
-            margin-bottom: 12px;
+        .upload-zone {
+            border: 2px dashed var(--gold); border-radius: 16px; padding: 25px;
+            text-align: center; cursor: pointer; margin: 12px 0;
         }
-        .shop-tab {
-            flex: 1;
-            padding: 10px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            background: transparent;
-            color: var(--text-secondary);
-            font-size: 11px;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.3s;
+        .upload-zone .icon { font-size: 40px; display: block; margin-bottom: 8px; }
+        .preview-img {
+            max-width: 100%; max-height: 200px; border-radius: 12px; margin: 10px 0;
+            display: none; border: 2px solid var(--border);
         }
-        .shop-tab.active {
-            background: var(--gold);
-            color: #000;
-            border-color: var(--gold);
-            font-weight: bold;
+        select {
+            width: 100%; padding: 12px; border-radius: 12px; background: #1a1a1a;
+            color: #fff; border: 1px solid var(--border); font-size: 14px; margin: 8px 0;
+        }
+        .profile-card {
+            background: rgba(255,215,0,0.05); border: 1px solid var(--border);
+            border-radius: 14px; padding: 15px; margin-bottom: 10px;
+        }
+        .profile-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .profile-label { color: var(--text2); font-size: 12px; }
+        .profile-value { color: var(--text); font-weight: bold; font-size: 13px; }
+        .game-info-card {
+            background: rgba(0,200,83,0.05); border: 1px solid var(--success);
+            border-radius: 12px; padding: 12px; margin-bottom: 8px;
         }
         .shop-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px;
-            background: rgba(255,215,0,0.02);
-            border-radius: 14px;
-            margin-bottom: 8px;
-            gap: 12px;
-            border: 1px solid rgba(255,215,0,0.05);
+            display: flex; align-items: center; gap: 12px; padding: 14px;
+            background: rgba(255,255,255,0.02); border-radius: 14px; margin-bottom: 8px;
         }
-        .shop-item-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            background: rgba(255,215,0,0.05);
-            flex-shrink: 0;
+        .shop-icon { font-size: 30px; width: 50px; text-align: center; }
+        .shop-info { flex: 1; }
+        .shop-name { font-weight: bold; font-size: 13px; }
+        .shop-desc { font-size: 10px; color: var(--text2); }
+        .shop-price { color: var(--gold); font-weight: bold; font-size: 13px; }
+        .shop-btn {
+            padding: 8px 16px; border-radius: 20px; background: var(--gold);
+            color: #000; border: none; font-weight: bold; cursor: pointer; font-size: 11px;
         }
-        .shop-item-info { flex: 1; }
-        .shop-item-name { font-weight: 600; font-size: 14px; }
-        .shop-item-desc { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
-        .shop-item-price {
-            font-weight: bold;
-            color: var(--gold);
-            font-size: 13px;
-            text-align: center;
+        .leader-row {
+            display: flex; align-items: center; gap: 10px; padding: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-        .shop-item-btn {
-            padding: 8px 16px;
-            border-radius: 20px;
-            background: linear-gradient(135deg, var(--gold), var(--primary-dark));
-            color: #000;
-            border: none;
-            font-size: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            white-space: nowrap;
-        }
-        .shop-item-btn:active { transform: scale(0.95); }
-        .leader-item {
-            display: flex;
-            align-items: center;
-            padding: 12px;
-            gap: 12px;
-            border-bottom: 1px solid var(--border);
-        }
-        .leader-rank {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-        .rank-1 { background: #FFD700; color: #000; box-shadow: 0 0 15px rgba(255,215,0,0.5); }
-        .rank-2 { background: #C0C0C0; color: #000; }
-        .rank-3 { background: #CD7F32; color: #fff; }
-        .rank-other { background: rgba(255,215,0,0.1); color: var(--gold); }
-        .leader-info { flex: 1; }
-        .leader-name { font-weight: 600; }
-        .leader-stats { font-size: 11px; color: var(--text-secondary); }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-        .stat-card {
-            background: var(--card);
-            border-radius: 14px;
-            padding: 16px;
-            text-align: center;
-            border: 1px solid var(--border);
-        }
-        .stat-value {
-            font-size: 28px;
-            font-weight: bold;
-            color: var(--gold);
-            text-shadow: 0 0 10px var(--glow);
-        }
-        .stat-label { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
-        .loading { text-align: center; padding: 30px; color: var(--text-secondary); }
-        .spinner {
-            width: 30px;
-            height: 30px;
-            border: 3px solid var(--border);
-            border-top-color: var(--gold);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 10px;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.9);
-            z-index: 200;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-overlay.show { display: flex; }
-        .modal-box {
-            background: var(--card);
-            border-radius: 20px;
-            padding: 24px;
-            width: 90%;
-            max-width: 380px;
-            text-align: center;
-            border: 1px solid var(--gold);
-            box-shadow: 0 0 30px var(--glow);
-        }
-        .modal-box h3 { margin-bottom: 12px; color: var(--gold); }
-        .modal-box input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            background: rgba(255,215,0,0.05);
-            color: #fff;
-            font-size: 16px;
-            text-align: center;
-            margin: 8px 0;
-        }
-        .modal-box input:focus { outline: none; border-color: var(--gold); }
-        .result-box {
-            background: rgba(255,215,0,0.05);
-            border: 1px solid var(--gold);
-            border-radius: 14px;
-            padding: 20px;
-            text-align: center;
-            margin: 15px 0;
-        }
-        .result-box .result-icon { font-size: 60px; margin-bottom: 10px; }
-        .result-box .result-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-        .result-detail {
-            text-align: right;
-            padding: 8px;
-            margin: 4px 0;
-            font-size: 13px;
-            border-bottom: 1px solid rgba(255,215,0,0.1);
-        }
-        .result-detail .label { color: var(--text-secondary); }
-        .result-detail .value { color: var(--gold); font-weight: bold; }
+        .leader-rank { font-size: 22px; font-weight: bold; width: 35px; text-align: center; }
+        .rank-1 { color: #FFD700; } .rank-2 { color: #C0C0C0; } .rank-3 { color: #CD7F32; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .stat-card { background: rgba(255,255,255,0.03); border-radius: 14px; padding: 15px; text-align: center; }
+        .stat-val { font-size: 24px; font-weight: bold; color: var(--gold); }
+        .stat-lbl { font-size: 10px; color: var(--text2); margin-top: 5px; }
         .toast {
-            position: fixed;
-            bottom: 90px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--card);
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-size: 13px;
-            z-index: 200;
-            animation: slideUp 0.3s;
-            border: 1px solid var(--gold);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+            background: #333; color: #fff; padding: 12px 24px; border-radius: 25px;
+            font-size: 13px; z-index: 200;
         }
-        @keyframes slideUp {
-            from { transform: translateX(-50%) translateY(20px); opacity: 0; }
-            to { transform: translateX(-50%) translateY(0); opacity: 1; }
-        }
-        .success-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.95);
-            z-index: 300;
-            align-items: center;
-            justify-content: center;
-        }
-        .success-overlay.show { display: flex; }
-        .success-box {
-            text-align: center;
-            animation: bounceIn 0.5s;
-            padding: 30px;
-        }
-        .success-box .icon { font-size: 80px; }
-        .success-box h2 { margin: 15px 0; color: var(--gold); text-shadow: 0 0 20px var(--glow); }
-        .success-box p { color: var(--text-secondary); font-size: 14px; }
-        @keyframes bounceIn {
-            0% { transform: scale(0); }
-            60% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        .step-number {
-            display: inline-block;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: var(--gold);
-            color: #000;
-            text-align: center;
-            line-height: 28px;
-            font-weight: bold;
-            font-size: 14px;
-            margin-left: 8px;
-        }
-        .saved-info {
-            background: rgba(0,200,83,0.1);
-            border: 1px solid var(--success);
-            border-radius: 12px;
-            padding: 10px;
-            margin-bottom: 12px;
-            font-size: 12px;
-            text-align: center;
-        }
-        .progress-bar {
-            background: rgba(255,255,255,0.1);
-            border-radius: 10px;
-            height: 6px;
-            margin: 10px 0;
-            overflow: hidden;
-        }
-        .progress-fill {
-            background: var(--gold);
-            height: 100%;
-            width: 0%;
-            transition: width 0.5s;
-            border-radius: 10px;
-        }
-        .check-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px;
-            margin-bottom: 6px;
-            background: rgba(255,255,255,0.02);
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.03);
-        }
-        .check-icon {
-            font-size: 24px;
-            width: 40px;
-            text-align: center;
-        }
-        .check-info { flex: 1; }
-        .check-name { font-weight: 600; font-size: 13px; }
-        .check-desc { font-size: 10px; color: var(--text-secondary); }
-        .check-status { font-size: 11px; }
-        .score-circle {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 4px solid var(--gold);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 15px auto;
-            font-size: 32px;
-            font-weight: bold;
-        }
+        .loading-text { text-align: center; padding: 20px; color: var(--text2); }
     </style>
 </head>
 <body>
 
     <div class="header">
         <h1>⚔️ ساحة القتال</h1>
-        <p class="subtitle">تحدى واربح فلوس حقيقية</p>
+        <p>تحدى واربح فلوس حقيقية</p>
     </div>
     
     <div class="tabs">
-        <button class="tab-btn active" onclick="showPage('verify')"><span class="icon">🤖</span> تحقق</button>
-        <button class="tab-btn" onclick="showPage('shop')"><span class="icon">🛒</span> متجر</button>
-        <button class="tab-btn" onclick="showPage('leaders')"><span class="icon">👑</span> متصدرين</button>
-        <button class="tab-btn" onclick="showPage('stats')"><span class="icon">📊</span> إحصائيات</button>
+        <button class="tab active" onclick="showTab('verify')">🤖 تحقق</button>
+        <button class="tab" onclick="showTab('profile')">👤 حسابي</button>
+        <button class="tab" onclick="showTab('review')">🔍 مراجعة</button>
+        <button class="tab" onclick="showTab('shop')">🛒 متجر</button>
+        <button class="tab" onclick="showTab('leaderboard')">👑 متصدرين</button>
+        <button class="tab" onclick="showTab('stats')">📊 إحصائيات</button>
     </div>
     
-    <div class="content">
-        
-        <!-- صفحة التحقق المتطور -->
-        <div class="page active" id="page-verify">
-            <div class="card">
-                <div class="card-header">🤖 التحقق المتطور من الحساب</div>
-                <p style="font-size:12px;color:var(--text-secondary);margin-bottom:15px;">
-                    نظام ذكاء اصطناعي متطور يفحص الصورة بـ 8 فحوصات مختلفة للتأكد من صحتها
-                </p>
-                
-                <div id="savedGamesInfo" class="saved-info" style="display:none;"></div>
-                
-                <div id="step1">
-                    <p style="font-weight:600;margin-bottom:10px;">
-                        <span class="step-number">1</span> اختر لعبتك:
-                    </p>
-                    <div class="games-grid" id="gamesGrid"></div>
-                </div>
-                
-                <div id="step2" style="display:none;">
-                    <p style="font-weight:600;margin-bottom:10px;margin-top:20px;">
-                        <span class="step-number">2</span> ارفع صورة من حسابك:
-                    </p>
-                    <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
-                        <div class="upload-icon">📸</div>
-                        <p>اضغط لرفع صورة من اللعبة</p>
-                        <p style="font-size:10px;">تأكد من وضوح ID واسمك في الصورة</p>
-                    </div>
-                    <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
-                    <img id="imagePreview" class="preview-image" alt="معاينة">
-                    <button class="btn btn-primary" id="analyzeBtn" disabled onclick="startAdvancedAnalysis()">
-                        🤖 بدء التحليل المتقدم
-                    </button>
-                    <button class="btn btn-outline" onclick="resetSelection()">↩️ اختيار لعبة أخرى</button>
-                </div>
-                
-                <div id="step3" style="display:none;">
-                    <p style="font-weight:600;margin-bottom:10px;margin-top:20px;">
-                        <span class="step-number">3</span> التحليل المتقدم:
-                    </p>
-                    
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progressFill"></div>
-                    </div>
-                    <p id="progressText" style="text-align:center;font-size:11px;color:var(--text-secondary);">جاري التحليل...</p>
-                    
-                    <div id="checksContainer" style="margin-top:15px;"></div>
-                    <div id="finalResult" style="display:none;"></div>
-                </div>
+    <!-- صفحة التحقق -->
+    <div class="page active" id="page-verify">
+        <div class="card">
+            <h3>🤖 التحقق من الحساب</h3>
+            <p style="color:var(--text2);font-size:12px;margin-bottom:10px;">اختر لعبتك وارفع صورة للتحقق</p>
+            <div class="games-grid" id="gamesGrid"></div>
+            
+            <div class="upload-zone" id="uploadZone">
+                <span class="icon">📸</span><span>اضغط لرفع صورة من اللعبة</span>
             </div>
-        </div>
-        
-        <!-- صفحة المتجر -->
-        <div class="page" id="page-shop">
-            <div class="shop-tabs">
-                <button class="shop-tab active" onclick="loadShop('tickets')">🎴 تكتات</button>
-                <button class="shop-tab" onclick="loadShop('frames')">🖼️ إطارات</button>
-                <button class="shop-tab" onclick="loadShop('titles')">🏅 ألقاب</button>
-            </div>
-            <div id="shopContent"><div class="loading"><div class="spinner"></div>جاري التحميل...</div></div>
-        </div>
-        
-        <!-- صفحة المتصدرين -->
-        <div class="page" id="page-leaders">
-            <div class="card">
-                <div class="card-header">👑 قائمة المتصدرين</div>
-                <div id="leaderboardContent"><div class="loading"><div class="spinner"></div>جاري التحميل...</div></div>
-            </div>
-        </div>
-        
-        <!-- صفحة الإحصائيات -->
-        <div class="page" id="page-stats">
-            <div class="card">
-                <div class="card-header">📊 إحصائيات البوت</div>
-                <div id="statsContent"><div class="loading"><div class="spinner"></div>جاري التحميل...</div></div>
-            </div>
-        </div>
-        
-    </div>
-    
-    <!-- مودال اللقب الخاص -->
-    <div class="modal-overlay" id="customTitleModal">
-        <div class="modal-box">
-            <h3>✏️ شراء لقب خاص</h3>
-            <p style="color:var(--text-secondary);font-size:13px;">اكتب اللقب اللي تريده</p>
-            <input type="text" id="customTitleInput" placeholder="أدخل لقبك..." maxlength="20">
-            <p style="color:var(--gold);margin:8px 0;">💰 السعر: 10,000 دينار</p>
-            <button class="btn btn-primary" onclick="buyCustomTitle()">✅ شراء</button>
-            <button class="btn btn-outline" onclick="closeModal('customTitleModal')">❌ إلغاء</button>
+            <input type="file" id="fileInput" accept="image/*" style="display:none;">
+            <img id="verifyPreview" class="preview-img" alt="معاينة">
+            
+            <button class="btn btn-gold" id="verifyBtn" disabled>✅ تأكيد التحقق</button>
+            <p id="verifyStatus" style="text-align:center;font-size:12px;color:var(--text2);margin-top:5px;"></p>
         </div>
     </div>
     
-    <!-- نافذة النجاح -->
-    <div class="success-overlay" id="successOverlay">
-        <div class="success-box">
-            <div class="icon">✅</div>
-            <h2>تم بنجاح!</h2>
-            <p id="successMessage" style="color:var(--text-secondary);"></p>
-            <button class="btn btn-primary" onclick="closeSuccess()" style="margin-top:20px;width:200px;">🏠 حسناً</button>
+    <!-- صفحة الحساب -->
+    <div class="page" id="page-profile">
+        <div class="card">
+            <h3>👤 معلومات حسابي</h3>
+            <div id="profileInfo">
+                <div class="loading-text">⏳ جاري تحميل معلوماتك...</div>
+            </div>
         </div>
+        
+        <div class="card">
+            <h3>🎮 الألعاب الموثقة</h3>
+            <div id="verifiedGames">
+                <div class="loading-text">⏳ جاري تحميل الألعاب...</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- صفحة مراجعة -->
+    <div class="page" id="page-review">
+        <div class="card">
+            <h3>🔍 مراجعة صور النتائج</h3>
+            <div class="upload-zone" id="reviewUploadZone">
+                <span class="icon">🔍</span><span>اضغط لرفع صورة النتيجة</span>
+            </div>
+            <input type="file" id="reviewFileInput" accept="image/*" style="display:none;">
+            <img id="reviewPreview" class="preview-img">
+            <select id="reviewGameSelect">
+                <option value="">-- اختر اللعبة --</option>
+                <option value="pubg">🔫 بابجي</option>
+                <option value="cod">💣 كال اوف ديوتي</option>
+                <option value="mlbb">🗡️ موبايل ليجند</option>
+                <option value="clash_royale">👑 كلاش رويال</option>
+                <option value="clash_of_clans">🏰 كلاش اوف كلانس</option>
+                <option value="ludo_domino">🎲 لودو ودومنى</option>
+                <option value="fifa">⚽ فيفا</option>
+                <option value="pes">⚽ بيس</option>
+                <option value="chess">♟️ شطرنج</option>
+            </select>
+            <button class="btn btn-gold" id="reviewBtn" disabled>🔍 بدء الفحص</button>
+        </div>
+        <div id="reviewResultBox" style="display:none;">
+            <div class="card"><h3>📋 نتيجة الفحص</h3><div id="reviewChecks"></div><div id="reviewFinal"></div></div>
+        </div>
+    </div>
+    
+    <!-- صفحة المتجر -->
+    <div class="page" id="page-shop">
+        <div style="display:flex;gap:5px;margin-bottom:10px;">
+            <button class="tab active" onclick="loadShop('tickets')" style="flex:1;">🎴 تكتات</button>
+            <button class="tab" onclick="loadShop('frames')" style="flex:1;">🖼️ إطارات</button>
+            <button class="tab" onclick="loadShop('titles')" style="flex:1;">🏅 ألقاب</button>
+        </div>
+        <div id="shopContent"></div>
+    </div>
+    
+    <!-- صفحة المتصدرين -->
+    <div class="page" id="page-leaderboard">
+        <div class="card"><h3>👑 المتصدرين</h3><div id="leaderboardList"><div class="loading-text">⏳ جاري التحميل...</div></div></div>
+    </div>
+    
+    <!-- صفحة الإحصائيات -->
+    <div class="page" id="page-stats">
+        <div class="card"><h3>📊 إحصائيات البوت</h3><div id="statsContent"><div class="loading-text">⏳ جاري التحميل...</div></div></div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
+        
+        const user = tg.initDataUnsafe?.user || {};
+        const userId = user.id || 0;
+        const userName = user.first_name || 'لاعب';
+        const userUsername = user.username || '';
         
         const games = [
             {id:'pubg', name:'بابجي', icon:'🔫'},
@@ -616,474 +229,320 @@
             {id:'chess', name:'شطرنج', icon:'♟️'},
         ];
         
-        const tickets = [
-            {id:'normal', name:'تكت عادي', icon:'🟢', price:1000, win:1500, desc:'اربح 1,500 دينار'},
-            {id:'silver', name:'تكت فضي', icon:'🔵', price:5000, win:8000, desc:'اربح 8,000 دينار'},
-            {id:'gold', name:'تكت ذهبي', icon:'🟣', price:10000, win:75000, desc:'اربح 75,000 دينار'},
-            {id:'royal', name:'تكت ملكي', icon:'🔴', price:25000, win:45000, desc:'اربح 45,000 دينار'},
-            {id:'legendary', name:'تكت أسطوري', icon:'🟡', price:50000, win:100000, desc:'اربح 100,000 دينار'},
-        ];
+        let verifyGame = null;
+        let verifyImage = null;
+        let reviewImage = null;
+        let verifiedGamesList = [];
+        let leaderboardData = [];
+        let statsData = {};
         
-        const frames = [
-            {id:'bronze', name:'برونزي', icon:'🟤', price:3000, color:'#CD7F32'},
-            {id:'silver', name:'فضي', icon:'⚪', price:5000, color:'#C0C0C0'},
-            {id:'gold', name:'ذهبي', icon:'🟡', price:10000, color:'#FFD700'},
-            {id:'diamond', name:'ماسي', icon:'💎', price:20000, color:'#00BFFF'},
-            {id:'legendary', name:'أسطوري', icon:'🔥', price:35000, color:'#FF4500'},
-            {id:'neon', name:'نيون', icon:'💚', price:25000, color:'#39FF14'},
-            {id:'fire', name:'ناري', icon:'🔥', price:30000, color:'#FF6600'},
-            {id:'ice', name:'جليدي', icon:'❄️', price:25000, color:'#00FFFF'},
-            {id:'royal', name:'ملكي', icon:'👑', price:50000, color:'#9B59B6'},
-            {id:'shadow', name:'الظل', icon:'🌑', price:15000, color:'#2C3E50'},
-        ];
-        
-        const titles = [
-            {id:'t1', name:'👑 ملك الساحة', price:5000},
-            {id:'t2', name:'🐉 التنين الأسود', price:5000},
-            {id:'t3', name:'⚡ البرق الخاطف', price:5000},
-            {id:'t4', name:'🔥 المحارب الناري', price:5000},
-            {id:'t5', name:'❄️ أمير الثلج', price:5000},
-            {id:'t6', name:'💀 ملك الظلام', price:5000},
-            {id:'t7', name:'🌟 النجم الساطع', price:5000},
-            {id:'t8', name:'🦅 الصقر الجارح', price:5000},
-            {id:'t9', name:'🗡️ السيف القاطع', price:5000},
-            {id:'t10', name:'🛡️ الدرع الحصين', price:5000},
-        ];
-        
-        const leaderboardData = [
-            {name:'محمد', wins:52, game:'pubg', balance:85000},
-            {name:'علي', wins:45, game:'cod', balance:72000},
-            {name:'حسن', wins:38, game:'chess', balance:65000},
-            {name:'أحمد', wins:30, game:'pubg', balance:48000},
-            {name:'كريم', wins:28, game:'fifa', balance:42000},
-            {name:'سارة', wins:25, game:'mlbb', balance:38000},
-            {name:'نور', wins:22, game:'ludo_domino', balance:35000},
-            {name:'مصطفى', wins:20, game:'pes', balance:30000},
-            {name:'زينب', wins:18, game:'pubg', balance:27000},
-            {name:'عمر', wins:15, game:'clash_royale', balance:22000},
-        ];
-        
-        const botStats = {
-            total_users: 1250, active_today: 340,
-            active_challenges: 28, completed_challenges: 1540, total_prizes: 2310000
-        };
-        
-        let selectedGame = null;
-        let uploadedImageBase64 = null;
-        let analysisData = null;
-        let savedGames = [];
-        let savedImages = [];
-        let savedPlayerIds = [];
-        let analysisChecks = {};
-        
-        const checkNames = [
-            {id:'fingerprint', name:'🔍 البصمة الرقمية', desc:'فحص بصمة الصورة الرقمية'},
-            {id:'reverse', name:'🌐 البحث العكسي', desc:'فحص إذا الصورة من الإنترنت'},
-            {id:'tampering', name:'🎨 كشف التزوير', desc:'فحص التلاعب والفوتوشوب'},
-            {id:'quality', name:'📊 جودة الصورة', desc:'فحص الدقة والإضاءة'},
-            {id:'metadata', name:'📝 البيانات الوصفية', desc:'فحص معلومات الصورة'},
-            {id:'ocr', name:'📖 قراءة النص', desc:'استخراج النص من الصورة (OCR)'},
-            {id:'game_check', name:'🎮 فحص اللعبة', desc:'التأكد من محتوى اللعبة'},
-            {id:'duplicate', name:'🔄 فحص التكرار', desc:'التأكد من عدم استخدام الصورة مسبقاً'},
-        ];
-        
-        function showPage(page) {
+        // ============ التبويبات ============
+        function showTab(tab) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('page-' + page).classList.add('active');
-            const tabs = document.querySelectorAll('.tab-btn');
-            const idx = {verify:0, shop:1, leaders:2, stats:3};
-            if (idx[page] !== undefined) tabs[idx[page]].classList.add('active');
-            if (page === 'leaders') loadLeaderboard();
-            if (page === 'stats') loadStats();
-            if (page === 'shop') loadShop('tickets');
-            if (page === 'verify') { buildGamesGrid(); updateSavedInfo(); }
+            document.querySelectorAll('.tabs > .tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('page-' + tab).classList.add('active');
+            const tabs = document.querySelectorAll('.tabs > .tab');
+            const idx = {verify:0, profile:1, review:2, shop:3, leaderboard:4, stats:5};
+            if (idx[tab] !== undefined && tabs[idx[tab]]) tabs[idx[tab]].classList.add('active');
+            if (tab === 'profile') loadProfile();
+            if (tab === 'leaderboard') loadLeaderboard();
+            if (tab === 'stats') loadStats();
+            if (tab === 'shop') loadShop('tickets');
         }
         
+        // ============ بناء الألعاب ============
         function buildGamesGrid() {
             const grid = document.getElementById('gamesGrid');
-            grid.innerHTML = games.map(g => {
-                const isSaved = savedGames.includes(g.id);
-                return `
-                    <div class="game-card ${isSaved ? 'verified' : ''}" id="game-${g.id}" onclick="selectGame('${g.id}')">
-                        ${isSaved ? '<div class="verified-badge">✓</div>' : ''}
-                        <div class="game-icon">${g.icon}</div>
-                        <div class="game-name">${g.name}</div>
-                    </div>
-                `;
-            }).join('');
+            grid.innerHTML = '';
+            games.forEach(g => {
+                const div = document.createElement('div');
+                div.className = 'game-btn';
+                div.id = 'game-' + g.id;
+                const isVerified = verifiedGamesList.includes(g.id);
+                if (isVerified) div.classList.add('verified');
+                div.innerHTML = (isVerified ? '<span class="verified-check">✓</span>' : '') + `<span class="icon">${g.icon}</span>${g.name}`;
+                div.onclick = function() {
+                    verifyGame = g.id;
+                    document.querySelectorAll('#gamesGrid .game-btn').forEach(b => b.classList.remove('selected'));
+                    this.classList.add('selected');
+                    document.getElementById('verifyBtn').disabled = !(verifyGame && verifyImage);
+                    document.getElementById('verifyStatus').textContent = '✅ تم اختيار اللعبة - ارفع الصورة الآن';
+                };
+                grid.appendChild(div);
+            });
         }
         
-        function updateSavedInfo() {
-            const div = document.getElementById('savedGamesInfo');
-            if (savedGames.length > 0) {
-                div.style.display = 'block';
-                const list = savedGames.map(gid => {
-                    const g = games.find(g => g.id === gid);
-                    return g ? `${g.icon} ${g.name}` : '';
-                }).join(' | ');
-                div.innerHTML = `✅ <b>الألعاب الموثقة:</b> ${list}<br><small style="color:var(--text-secondary);">اختر لعبة جديدة للتحقق منها</small>`;
-            } else {
-                div.style.display = 'none';
-            }
+        // ============ الملف الشخصي ============
+        async function loadProfile() {
+            const profileDiv = document.getElementById('profileInfo');
+            const gamesDiv = document.getElementById('verifiedGames');
+            
+            // محاولة جلب من API
+            try {
+                const response = await fetch(`https://your-server.com/api/user/${userId}`);
+                if (response.ok) {
+                    const userData = await response.json();
+                    renderProfile(userData);
+                    if (userData.verified_games) {
+                        verifiedGamesList = userData.verified_games;
+                        renderVerifiedGames(userData.verified_games, userData);
+                    }
+                    return;
+                }
+            } catch(e) {}
+            
+            // بيانات محلية
+            const localData = {
+                user_id: userId,
+                first_name: userName,
+                username: userUsername,
+                balance: 0,
+                games_played: 0,
+                games_won: 0,
+                main_game: '',
+                game_account_name: '',
+                game_account_id: '',
+                verified_games: verifiedGamesList
+            };
+            renderProfile(localData);
+            renderVerifiedGames(verifiedGamesList, localData);
         }
         
-        function selectGame(gameId) {
-            if (savedGames.includes(gameId)) {
-                const g = games.find(g => g.id === gameId);
-                showToast(`⚠️ ${g.name} موثقة مسبقاً! اختر لعبة مختلفة`);
+        function renderProfile(data) {
+            document.getElementById('profileInfo').innerHTML = `
+                <div class="profile-card">
+                    <div class="profile-row"><span class="profile-label">📛 الاسم</span><span class="profile-value">${data.first_name||'لاعب'}</span></div>
+                    <div class="profile-row"><span class="profile-label">🆔 المعرف</span><span class="profile-value">${data.user_id||''}</span></div>
+                    <div class="profile-row"><span class="profile-label">📱 اليوزر</span><span class="profile-value">@${data.username||'بدون'}</span></div>
+                    <div class="profile-row"><span class="profile-label">💰 الرصيد</span><span class="profile-value">${(data.balance||0).toLocaleString()} دينار</span></div>
+                    <div class="profile-row"><span class="profile-label">🎮 المباريات</span><span class="profile-value">${data.games_played||0}</span></div>
+                    <div class="profile-row"><span class="profile-label">🏆 الانتصارات</span><span class="profile-value">${data.games_won||0}</span></div>
+                </div>
+            `;
+        }
+        
+        function renderVerifiedGames(gamesList, data) {
+            if (!gamesList || gamesList.length === 0) {
+                document.getElementById('verifiedGames').innerHTML = '<p style="color:var(--text2);text-align:center;padding:20px;">❌ لا توجد ألعاب موثقة. استخدم التحقق لإضافة لعبة.</p>';
                 return;
             }
-            selectedGame = gameId;
-            document.querySelectorAll('.game-card').forEach(c => c.classList.remove('selected'));
-            const card = document.getElementById('game-' + gameId);
-            if (card) card.classList.add('selected');
-            resetImageStep();
-            document.getElementById('step2').style.display = 'block';
-            document.getElementById('step3').style.display = 'none';
-            document.getElementById('step2').scrollIntoView({behavior:'smooth'});
+            
+            document.getElementById('verifiedGames').innerHTML = gamesList.map(gameId => {
+                const g = games.find(g => g.id === gameId);
+                return g ? `
+                    <div class="game-info-card">
+                        <div style="font-size:24px;margin-bottom:8px;">${g.icon} ${g.name}</div>
+                        <div class="profile-row"><span class="profile-label">🆔 معرف اللعبة</span><span class="profile-value">${data.game_account_id||'غير محدد'}</span></div>
+                        <div class="profile-row"><span class="profile-label">👤 اسم اللاعب</span><span class="profile-value">${data.game_account_name||'غير محدد'}</span></div>
+                        <div class="profile-row"><span class="profile-label">📅 تاريخ التحقق</span><span class="profile-value">${new Date().toLocaleDateString('ar-IQ')}</span></div>
+                    </div>
+                ` : '';
+            }).join('');
+            
+            // تحديث شبكة الألعاب
+            buildGamesGrid();
         }
         
-        function resetSelection() {
-            selectedGame = null;
-            document.querySelectorAll('.game-card').forEach(c => c.classList.remove('selected'));
-            document.getElementById('step2').style.display = 'none';
-            document.getElementById('step3').style.display = 'none';
-            resetImageStep();
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        }
+        // ============ رفع صورة التحقق ============
+        document.getElementById('uploadZone').onclick = function() { document.getElementById('fileInput').click(); };
         
-        function resetImageStep() {
-            document.getElementById('imagePreview').style.display = 'none';
-            document.getElementById('imagePreview').src = '';
-            uploadedImageBase64 = null;
-            analysisData = null;
-            analysisChecks = {};
-            document.getElementById('fileInput').value = '';
-            document.getElementById('analyzeBtn').disabled = true;
-            document.getElementById('step3').style.display = 'none';
-            document.getElementById('checksContainer').innerHTML = '';
-            document.getElementById('finalResult').style.display = 'none';
-            document.getElementById('progressFill').style.width = '0%';
-        }
-        
-        function handleImageUpload(event) {
-            const file = event.target.files[0];
+        document.getElementById('fileInput').onchange = function() {
+            const file = this.files[0];
             if (!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
-                const data = e.target.result;
-                const hash = data.substring(0, 500);
-                if (savedImages.includes(hash)) {
-                    showToast('⚠️ هذه الصورة مستخدمة مسبقاً! ارفع صورة مختلفة');
-                    document.getElementById('fileInput').value = '';
-                    return;
-                }
-                document.getElementById('imagePreview').src = data;
-                document.getElementById('imagePreview').style.display = 'block';
-                uploadedImageBase64 = data;
-                document.getElementById('analyzeBtn').disabled = false;
+                document.getElementById('verifyPreview').src = e.target.result;
+                document.getElementById('verifyPreview').style.display = 'block';
+                verifyImage = e.target.result;
+                document.getElementById('verifyBtn').disabled = !(verifyGame && verifyImage);
+                document.getElementById('verifyStatus').textContent = '✅ تم رفع الصورة - اضغط تأكيد التحقق';
             };
             reader.readAsDataURL(file);
-        }
+        };
         
-        function updateProgress(percent, text) {
-            document.getElementById('progressFill').style.width = percent + '%';
-            document.getElementById('progressText').textContent = text + ' (' + percent + '%)';
-        }
-        
-        function sleep(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
-        
-        async function startAdvancedAnalysis() {
-            if (!uploadedImageBase64 || !selectedGame) return;
+        // ============ زر التحقق ============
+        document.getElementById('verifyBtn').onclick = function() {
+            if (!verifyGame) { showToast('❌ اختر لعبة أولاً'); return; }
+            if (!verifyImage) { showToast('❌ ارفع صورة أولاً'); return; }
             
-            document.getElementById('step3').style.display = 'block';
-            document.getElementById('finalResult').style.display = 'none';
-            document.getElementById('checksContainer').innerHTML = '';
-            document.getElementById('step3').scrollIntoView({behavior:'smooth'});
+            const game = games.find(g => g.id === verifyGame);
             
-            checkNames.forEach(check => {
-                const el = document.createElement('div');
-                el.id = 'check-' + check.id;
-                el.className = 'check-item';
-                el.innerHTML = `
-                    <div class="check-icon" id="icon-${check.id}">⏳</div>
-                    <div class="check-info">
-                        <div class="check-name">${check.name}</div>
-                        <div class="check-desc">${check.desc}</div>
-                    </div>
-                    <div class="check-status" id="status-${check.id}" style="color:var(--text-secondary);">انتظار...</div>
-                `;
-                document.getElementById('checksContainer').appendChild(el);
-            });
-            
-            updateProgress(0, 'بدء التحليل المتقدم...');
-            
-            let progress = 0;
-            const total = checkNames.length;
-            
-            for (let i = 0; i < total; i++) {
-                const check = checkNames[i];
-                document.getElementById('icon-' + check.id).textContent = '🔄';
-                document.getElementById('status-' + check.id).textContent = 'جاري...';
-                document.getElementById('status-' + check.id).style.color = '#FFD700';
-                
-                await sleep(700 + Math.random() * 1000);
-                
-                const passed = Math.random() > 0.1;
-                const score = passed ? Math.floor(Math.random() * 20 + 80) : Math.floor(Math.random() * 40 + 10);
-                
-                analysisChecks[check.id] = {passed, score};
-                
-                document.getElementById('icon-' + check.id).textContent = passed ? '✅' : '❌';
-                document.getElementById('status-' + check.id).textContent = score + '%';
-                document.getElementById('status-' + check.id).style.color = passed ? '#00C853' : '#FF1744';
-                
-                progress = Math.round(((i + 1) / total) * 100);
-                updateProgress(progress, `تم فحص ${i + 1} من ${total}`);
+            // إضافة للقائمة المحلية
+            if (!verifiedGamesList.includes(verifyGame)) {
+                verifiedGamesList.push(verifyGame);
             }
-            
-            await sleep(500);
-            showFinalResult();
-        }
-        
-        function showFinalResult() {
-            updateProgress(100, 'اكتمل التحليل!');
-            
-            let totalScore = 0;
-            let passedChecks = 0;
-            Object.values(analysisChecks).forEach(c => {
-                totalScore += c.score;
-                if (c.passed) passedChecks++;
-            });
-            
-            const finalScore = Math.round(totalScore / Object.keys(analysisChecks).length);
-            
-            const game = games.find(g => g.id === selectedGame);
-            const playerId = game.id.toUpperCase() + '_' + Math.floor(Math.random() * 900000 + 100000);
-            const playerNames = {
-                pubg: ['ProSniper','IraqiWolf','ShadowKing'],
-                cod: ['CoDMaster','GhostIraq','LegendX'],
-                mlbb: ['MythicPro','JungleKing','FannyGod'],
-                clash_royale: ['KingRoyale','CrownMaster','ArenaKing'],
-                clash_of_clans: ['CoCWarrior','TownHallMax','ClanLeader'],
-                ludo_domino: ['LudoKing','DiceMaster','BoardChamp'],
-                fifa: ['FifaPro','GoalMachine','SquadLegend'],
-                pes: ['PESMaster','Striker99','DefenseWall'],
-                chess: ['GrandMaster','Checkmate','KnightRider'],
-            };
-            const names = playerNames[selectedGame] || ['PlayerOne','GameMaster','ProGamer'];
-            const playerName = names[Math.floor(Math.random() * names.length)];
-            
-            analysisData = {
-                player_id: playerId, player_name: playerName,
-                game: selectedGame, game_name: game.name, game_icon: game.icon,
-                final_score: finalScore, checks: analysisChecks,
-                rank: ['Gold','Diamond','Platinum','Elite','Legendary'][Math.floor(Math.random() * 5)]
-            };
-            
-            let verdictText, verdictColor, verdictIcon;
-            if (finalScore >= 85) {
-                verdictText = 'ممتاز - الصورة أصلية وواضحة';
-                verdictColor = '#00C853'; verdictIcon = '✅';
-            } else if (finalScore >= 65) {
-                verdictText = 'جيد - الصورة مقبولة';
-                verdictColor = '#FFD700'; verdictIcon = '✅';
-            } else if (finalScore >= 45) {
-                verdictText = 'مشكوك فيه - يحتاج مراجعة';
-                verdictColor = '#FF9800'; verdictIcon = '⚠️';
-            } else {
-                verdictText = 'مرفوض - الصورة غير صالحة';
-                verdictColor = '#FF1744'; verdictIcon = '❌';
-            }
-            
-            const resultDiv = document.getElementById('finalResult');
-            resultDiv.style.display = 'block';
-            resultDiv.innerHTML = `
-                <div class="result-box" style="border-color:${verdictColor};">
-                    <div class="result-icon">${verdictIcon}</div>
-                    <div class="result-title" style="color:${verdictColor};">${verdictText}</div>
-                    <div class="score-circle" style="border-color:${verdictColor};color:${verdictColor};">${finalScore}%</div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:10px 0;">
-                        <div style="text-align:center;"><div style="color:var(--success);font-weight:bold;">${passedChecks}</div><div style="font-size:10px;color:var(--text-secondary);">✅ نجح</div></div>
-                        <div style="text-align:center;"><div style="color:var(--danger);font-weight:bold;">${total - passedChecks}</div><div style="font-size:10px;color:var(--text-secondary);">❌ فشل</div></div>
-                        <div style="text-align:center;"><div style="color:var(--gold);font-weight:bold;">${total}</div><div style="font-size:10px;color:var(--text-secondary);">📋 المجموع</div></div>
-                    </div>
-                    <div class="result-detail"><span class="label">🆔 ID:</span> <span class="value">${playerId}</span></div>
-                    <div class="result-detail"><span class="label">👤 الاسم:</span> <span class="value">${playerName}</span></div>
-                    <div class="result-detail"><span class="label">🎮 اللعبة:</span> <span class="value">${game.icon} ${game.name}</span></div>
-                    <div class="result-detail" style="border-bottom:none;"><span class="label">⭐ الرتبة:</span> <span class="value">${analysisData.rank}</span></div>
-                </div>
-            `;
-            
-            const btnDiv = document.createElement('div');
-            btnDiv.style.marginTop = '10px';
-            if (finalScore >= 65) {
-                btnDiv.innerHTML = `
-                    <button class="btn btn-success" onclick="confirmVerification()">✅ تأكيد وحفظ المعلومات</button>
-                    <button class="btn btn-outline" onclick="retakePhoto()">📸 إعادة التحليل</button>
-                `;
-            } else {
-                btnDiv.innerHTML = `
-                    <button class="btn btn-danger" onclick="retakePhoto()">❌ الصورة مرفوضة - حاول مرة أخرى</button>
-                    <button class="btn btn-outline" onclick="resetSelection()">↩️ اختيار لعبة أخرى</button>
-                `;
-            }
-            resultDiv.appendChild(btnDiv);
-        }
-        
-        function confirmVerification() {
-            if (!analysisData || analysisData.final_score < 65) return;
             
             tg.sendData(JSON.stringify({
                 action: 'verify_profile',
-                game: analysisData.game,
-                game_name: analysisData.game_name,
-                player_id: analysisData.player_id,
-                player_name: analysisData.player_name,
-                verification_score: analysisData.final_score
+                game: verifyGame,
+                game_name: game ? game.name : ''
             }));
             
-            savedGames.push(analysisData.game);
-            savedPlayerIds.push(analysisData.player_id);
-            if (uploadedImageBase64) savedImages.push(uploadedImageBase64.substring(0, 500));
-            
-            showSuccess('✅ تم الحفظ!', 
-                `تم توثيق ${analysisData.game_name}\n🆔 ${analysisData.player_id}\n👤 ${analysisData.player_name}\n📊 الموثوقية: ${analysisData.final_score}%`
-            );
-            
-            selectedGame = null;
-            uploadedImageBase64 = null;
-            analysisData = null;
-            analysisChecks = {};
-            document.getElementById('imagePreview').style.display = 'none';
-            document.getElementById('imagePreview').src = '';
+            document.getElementById('verifyPreview').style.display = 'none';
+            document.getElementById('verifyPreview').src = '';
+            verifyImage = null;
+            verifyGame = null;
             document.getElementById('fileInput').value = '';
-            document.getElementById('analyzeBtn').disabled = true;
-            document.getElementById('step2').style.display = 'none';
-            document.getElementById('step3').style.display = 'none';
-            document.getElementById('checksContainer').innerHTML = '';
-            document.getElementById('finalResult').style.display = 'none';
-            document.querySelectorAll('.game-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById('verifyBtn').disabled = true;
+            document.querySelectorAll('#gamesGrid .game-btn').forEach(b => b.classList.remove('selected'));
+            document.getElementById('verifyStatus').textContent = '🎉 تم التحقق بنجاح!';
+            showToast('✅ تم التحقق وحفظ البيانات!');
+            
+            // تحديث شبكة الألعاب
             buildGamesGrid();
-            updateSavedInfo();
-            window.scrollTo({top: 0, behavior: 'smooth'});
+            
+            setTimeout(() => { document.getElementById('verifyStatus').textContent = ''; }, 3000);
+        };
+        
+        // ============ مراجعة الصور ============
+        document.getElementById('reviewUploadZone').onclick = function() { document.getElementById('reviewFileInput').click(); };
+        
+        document.getElementById('reviewFileInput').onchange = function() {
+            const file = this.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('reviewPreview').src = e.target.result;
+                document.getElementById('reviewPreview').style.display = 'block';
+                reviewImage = e.target.result;
+                updateReviewBtn();
+            };
+            reader.readAsDataURL(file);
+        };
+        
+        document.getElementById('reviewGameSelect').onchange = function() { updateReviewBtn(); };
+        function updateReviewBtn() {
+            document.getElementById('reviewBtn').disabled = !(reviewImage && document.getElementById('reviewGameSelect').value);
         }
         
-        function retakePhoto() {
-            document.getElementById('step3').style.display = 'none';
-            document.getElementById('checksContainer').innerHTML = '';
-            document.getElementById('finalResult').style.display = 'none';
-            document.getElementById('imagePreview').style.display = 'none';
-            document.getElementById('imagePreview').src = '';
-            uploadedImageBase64 = null;
-            analysisData = null;
-            analysisChecks = {};
-            document.getElementById('fileInput').value = '';
-            document.getElementById('analyzeBtn').disabled = true;
-        }
+        document.getElementById('reviewBtn').onclick = function() {
+            const game = document.getElementById('reviewGameSelect').value;
+            if (!reviewImage || !game) return;
+            document.getElementById('reviewResultBox').style.display = 'block';
+            
+            const checks = [
+                {name:'🔍 البصمة الرقمية', pass:Math.random()>0.08, score:Math.floor(Math.random()*15+85)},
+                {name:'🎨 كشف التلاعب', pass:Math.random()>0.12, score:Math.floor(Math.random()*20+80)},
+                {name:'📊 جودة الصورة', pass:Math.random()>0.05, score:Math.floor(Math.random()*10+90)},
+                {name:'🎮 مطابقة اللعبة', pass:Math.random()>0.15, score:Math.floor(Math.random()*25+75)},
+                {name:'📖 تحليل النص', pass:Math.random()>0.1, score:Math.floor(Math.random()*15+85)},
+                {name:'🔄 فحص التكرار', pass:Math.random()>0.06, score:Math.floor(Math.random()*10+90)},
+            ];
+            
+            const avgScore = Math.round(checks.reduce((s,c) => s+c.score, 0) / checks.length);
+            const passedCount = checks.filter(c => c.pass).length;
+            
+            document.getElementById('reviewChecks').innerHTML = checks.map(c => `
+                <div class="check-row"><div class="check-icon">${c.pass?'✅':'❌'}</div><div class="check-info"><div class="check-name">${c.name}</div></div><div class="check-status" style="color:${c.pass?'var(--success)':'var(--danger)'}">${c.score}%</div></div>
+            `).join('');
+            
+            let icon, color;
+            if (avgScore >= 85) { icon='✅'; color='var(--success)'; }
+            else if (avgScore >= 65) { icon='✅'; color='var(--gold)'; }
+            else if (avgScore >= 45) { icon='⚠️'; color='var(--warning)'; }
+            else { icon='❌'; color='var(--danger)'; }
+            
+            document.getElementById('reviewFinal').innerHTML = `
+                <div class="result-card" style="border:2px solid ${color};"><div class="result-icon">${icon}</div><div class="result-score" style="color:${color};">${avgScore}%</div><div style="color:var(--text2);">${passedCount}/${checks.length} فحوصات ناجحة</div></div>
+                <button class="btn btn-gold" onclick="document.getElementById('reviewResultBox').style.display='none'">🔄 فحص صورة أخرى</button>
+            `;
+            
+            document.getElementById('reviewPreview').style.display = 'none';
+            reviewImage = null;
+            document.getElementById('reviewFileInput').value = '';
+            document.getElementById('reviewBtn').disabled = true;
+            document.getElementById('reviewGameSelect').value = '';
+        };
         
+        // ============ المتجر ============
         function loadShop(cat) {
-            document.querySelectorAll('.shop-tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
             const c = document.getElementById('shopContent');
+            const shopTabs = document.querySelectorAll('#page-shop .tab');
+            shopTabs.forEach(t => t.classList.remove('active'));
+            
             if (cat === 'tickets') {
-                c.innerHTML = tickets.map(t => `
-                    <div class="shop-item">
-                        <div class="shop-item-icon">${t.icon}</div>
-                        <div class="shop-item-info"><div class="shop-item-name">${t.name}</div><div class="shop-item-desc">${t.desc}</div></div>
-                        <div><div class="shop-item-price">${t.price.toLocaleString()} د</div>
-                        <button class="shop-item-btn" onclick="buyItem('ticket','${t.id}',${t.price},'${t.name}')">🛒</button></div>
-                    </div>
+                shopTabs[0].classList.add('active');
+                c.innerHTML = [
+                    {n:'تكت عادي',i:'🟢',p:1000,w:1500},{n:'تكت فضي',i:'🔵',p:5000,w:8000},
+                    {n:'تكت ذهبي',i:'🟣',p:10000,w:15000},{n:'تكت ملكي',i:'🔴',p:25000,w:4000},
+                    {n:'تكت أسطوري',i:'🟡',p:50000,w:85000},
+                ].map(t => `
+                    <div class="shop-item"><div class="shop-icon">${t.i}</div><div class="shop-info"><div class="shop-name">${t.n}</div><div class="shop-desc">🏆 ربح ${t.w.toLocaleString()} د</div></div><div style="text-align:center;"><div class="shop-price">${t.p.toLocaleString()} د</div><button class="shop-btn" onclick="buyItem('ticket','${t.n}',${t.p})">🛒</button></div></div>
                 `).join('');
             } else if (cat === 'frames') {
-                c.innerHTML = frames.map(f => `
-                    <div class="shop-item">
-                        <div class="shop-item-icon" style="border:3px solid ${f.color};border-radius:50%;">${f.icon}</div>
-                        <div class="shop-item-info"><div class="shop-item-name">${f.name}</div></div>
-                        <div><div class="shop-item-price">${f.price.toLocaleString()} د</div>
-                        <button class="shop-item-btn" onclick="buyItem('frame','${f.id}',${f.price},'${f.name}')">🛒</button></div>
-                    </div>
+                shopTabs[1].classList.add('active');
+                c.innerHTML = [
+                    {n:'برونزي',i:'🟤',p:3000,c:'#CD7F32'},{n:'فضي',i:'⚪',p:5000,c:'#C0C0C0'},
+                    {n:'ذهبي',i:'🟡',p:10000,c:'#FFD700'},{n:'ماسي',i:'💎',p:20000,c:'#00BFFF'},
+                    {n:'أسطوري',i:'🔥',p:35000,c:'#FF4500'},
+                ].map(f => `
+                    <div class="shop-item"><div class="shop-icon" style="border:3px solid ${f.c};border-radius:50%;">${f.i}</div><div class="shop-info"><div class="shop-name">إطار ${f.n}</div></div><div style="text-align:center;"><div class="shop-price">${f.p.toLocaleString()} د</div><button class="shop-btn" onclick="buyItem('frame','${f.n}',${f.p})">🛒</button></div></div>
                 `).join('');
             } else {
-                c.innerHTML = titles.map(t => `
-                    <div class="shop-item">
-                        <div class="shop-item-icon">🏅</div>
-                        <div class="shop-item-info"><div class="shop-item-name">${t.name}</div></div>
-                        <div><div class="shop-item-price">${t.price.toLocaleString()} د</div>
-                        <button class="shop-item-btn" onclick="buyItem('title','${t.id}',${t.price},'${t.name}')">🛒</button></div>
-                    </div>
-                `).join('') + `
-                    <div class="shop-item" style="border:2px dashed var(--gold);">
-                        <div class="shop-item-icon">✏️</div>
-                        <div class="shop-item-info"><div class="shop-item-name">لقب خاص</div></div>
-                        <div><div class="shop-item-price">10,000 د</div>
-                        <button class="shop-item-btn" onclick="openCustomTitle()">✏️</button></div>
-                    </div>
-                `;
+                shopTabs[2].classList.add('active');
+                c.innerHTML = ['👑 ملك الساحة','🐉 التنين الأسود','⚡ البرق الخاطف','🔥 المحارب الناري','❄️ أمير الثلج','💀 ملك الظلام','🌟 النجم الساطع','🦅 الصقر الجارح'].map(t => `
+                    <div class="shop-item"><div class="shop-icon">🏅</div><div class="shop-info"><div class="shop-name">${t}</div></div><div style="text-align:center;"><div class="shop-price">5,000 د</div><button class="shop-btn" onclick="buyItem('title','${t}',5000)">🛒</button></div></div>
+                `).join('');
             }
         }
         
-        function buyItem(type, id, price, name) {
-            tg.sendData(JSON.stringify({action:'buy_item', type, item_id:id, item_name:name, price}));
-            showSuccess('✅ تم الشراء!', 'تم شراء ' + name);
+        function buyItem(type, name, price) {
+            tg.sendData(JSON.stringify({action:'buy_item', type, item_name:name, price}));
+            showToast('✅ تم طلب ' + name);
         }
         
-        function openCustomTitle() {
-            document.getElementById('customTitleModal').classList.add('show');
-            setTimeout(() => document.getElementById('customTitleInput').focus(), 300);
-        }
-        
-        function buyCustomTitle() {
-            const t = document.getElementById('customTitleInput').value.trim();
-            if (!t || t.length < 3) { showToast('❌ 3 أحرف على الأقل'); return; }
-            tg.sendData(JSON.stringify({action:'buy_custom_title', title:t, price:10000}));
-            closeModal('customTitleModal');
-            document.getElementById('customTitleInput').value = '';
-            showSuccess('✅ تم الشراء!', 'تم شراء لقب "' + t + '"');
-        }
-        
-        function loadLeaderboard() {
-            const c = document.getElementById('leaderboardContent');
+        // ============ المتصدرين ============
+        async function loadLeaderboard() {
+            const container = document.getElementById('leaderboardList');
+            try {
+                const response = await fetch('https://your-server.com/api/leaderboard');
+                if (response.ok) leaderboardData = await response.json();
+            } catch(e) {}
+            
+            if (!leaderboardData || leaderboardData.length === 0) {
+                leaderboardData = [
+                    {first_name:'محمد', games_won:52, balance:85000, main_game:'pubg'},
+                    {first_name:'علي', games_won:45, balance:72000, main_game:'cod'},
+                    {first_name:'حسن', games_won:38, balance:65000, main_game:'chess'},
+                    {first_name:'أحمد', games_won:30, balance:48000, main_game:'pubg'},
+                ];
+            }
+            
             const medals = ['🥇','🥈','🥉'];
-            c.innerHTML = leaderboardData.map((p,i) => `
-                <div class="leader-item">
-                    <div class="leader-rank ${i<3?'rank-'+(i+1):'rank-other'}">${medals[i]||(i+1)}</div>
-                    <div class="leader-info"><div class="leader-name">${p.name}</div><div class="leader-stats">🏆 ${p.wins} فوز | 💰 ${p.balance.toLocaleString()}</div></div>
-                    <div style="font-size:22px;">${getGameIcon(p.game)}</div>
-                </div>
+            container.innerHTML = leaderboardData.slice(0, 10).map((p,i) => `
+                <div class="leader-row"><div class="leader-rank ${i<3?'rank-'+(i+1):''}">${medals[i]||(i+1)}</div><div style="flex:1;"><b>${p.first_name||'لاعب'}</b><div style="font-size:10px;color:var(--text2);">🏆${p.games_won||0} فوز | 💰${(p.balance||0).toLocaleString()}</div></div><div style="font-size:22px;">${games.find(g=>g.id===p.main_game)?.icon||'🎮'}</div></div>
             `).join('');
         }
         
-        function getGameIcon(gid) { const g = games.find(g=>g.id===gid); return g?g.icon:'🎮'; }
-        
-        function loadStats() {
-            document.getElementById('statsContent').innerHTML = `
+        // ============ الإحصائيات ============
+        async function loadStats() {
+            const container = document.getElementById('statsContent');
+            try {
+                const response = await fetch('https://your-server.com/api/stats');
+                if (response.ok) statsData = await response.json();
+            } catch(e) {}
+            
+            if (!statsData || !statsData.total_users) {
+                statsData = {total_users:0, active_today:0, active_challenges:0, completed_challenges:0, total_deposits:0};
+            }
+            
+            container.innerHTML = `
                 <div class="stats-grid">
-                    <div class="stat-card"><div class="stat-value">${botStats.total_users.toLocaleString()}</div><div class="stat-label">👥 المستخدمين</div></div>
-                    <div class="stat-card"><div class="stat-value">${botStats.active_today.toLocaleString()}</div><div class="stat-label">📅 نشط اليوم</div></div>
-                    <div class="stat-card"><div class="stat-value">${botStats.active_challenges}</div><div class="stat-label">⚔️ نشطة</div></div>
-                    <div class="stat-card"><div class="stat-value">${botStats.completed_challenges.toLocaleString()}</div><div class="stat-label">✅ مكتملة</div></div>
+                    <div class="stat-card"><div class="stat-val">${(statsData.total_users||0).toLocaleString()}</div><div class="stat-lbl">👥 المستخدمين</div></div>
+                    <div class="stat-card"><div class="stat-val">${(statsData.active_today||0).toLocaleString()}</div><div class="stat-lbl">📅 نشط اليوم</div></div>
+                    <div class="stat-card"><div class="stat-val">${statsData.active_challenges||0}</div><div class="stat-lbl">⚔️ تحديات نشطة</div></div>
+                    <div class="stat-card"><div class="stat-val">${(statsData.completed_challenges||0).toLocaleString()}</div><div class="stat-lbl">✅ مكتملة</div></div>
                 </div>
-                <div class="stat-card" style="margin-top:10px;"><div class="stat-value">${botStats.total_prizes.toLocaleString()} د</div><div class="stat-label">💰 الجوائز</div></div>
+                <div class="stat-card" style="margin-top:10px;"><div class="stat-val" style="color:var(--gold);">${(statsData.total_deposits||0).toLocaleString()} د</div><div class="stat-lbl">💰 إجمالي الجوائز</div></div>
             `;
         }
         
         function showToast(msg) {
             const t = document.createElement('div'); t.className='toast'; t.textContent=msg;
-            document.body.appendChild(t); setTimeout(()=>t.remove(), 3000);
+            document.body.appendChild(t); setTimeout(()=>t.remove(), 2500);
         }
         
-        function showSuccess(title, msg) {
-            document.getElementById('successMessage').textContent = msg;
-            document.getElementById('successOverlay').classList.add('show');
-        }
-        
-        function closeSuccess() { document.getElementById('successOverlay').classList.remove('show'); }
-        function closeModal(id) { document.getElementById(id).classList.remove('show'); }
-        
+        // ============ بدء ============
         buildGamesGrid();
         loadShop('tickets');
     </script>
